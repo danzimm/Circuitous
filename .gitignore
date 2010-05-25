@@ -1,0 +1,6 @@
+*.dylib
+*.deb
+obj
+CIRPrefs
+.DS_Store
+
