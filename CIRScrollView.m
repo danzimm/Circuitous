@@ -28,6 +28,7 @@ static NSSet *_activeApps = nil;
 			[_activeApps release];
 		_activeApps = [[NSSet alloc] initWithSet:apps];
 	}
+	BOOL closeBox = [prefs objectForKey:@"close"] ? [[prefs objectForKey:@"close"] boolValue] : YES;
 	appSet = [[NSSet alloc] initWithSet:apps];
 	float width = 11.0f;
 	int place = -1;
@@ -37,7 +38,7 @@ static NSSet *_activeApps = nil;
 		CIRIcon *icon = [[CIRIcon alloc] initWithIdentifier:app andXCoor:(11.0f + (place * multi)) animations:([prefs objectForKey:@"appanimations"] ? [[prefs objectForKey:@"appanimations"] boolValue] : YES) labels:([prefs objectForKey:@"icontext"] ? [[prefs objectForKey:@"icontext"] boolValue] : YES) badges:([prefs objectForKey:@"badges"] ? [[prefs objectForKey:@"badges"] boolValue] : YES)];
 		width = icon.frame.size.width + icon.frame.origin.x;
 		icon.tag = place++;
-		if ([_activeApps containsObject:app])
+		if ([_activeApps containsObject:app] && closeBox)
 			[icon setActive];
 		[self addSubview:icon];
 		[_icons addObject:icon];
