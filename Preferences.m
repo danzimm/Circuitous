@@ -212,8 +212,8 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 		case 4:
 			_quitIt = [dict objectForKey:@"quit"] ? [[dict objectForKey:@"quit"] intValue] : 1;
 			_backgroundIt = [dict objectForKey:@"background"] ? [[dict objectForKey:@"background"] intValue] : 0;
-			UITextView *gestureInfo = [[UITextView alloc] initWithFrame:CGRectMake(0.0f,0.0f,_tableView.frame.size.height, 40.0f)];
-			gestureInfo.font = [UIFont systemFontOfSize:16.0f];
+			UITextView *gestureInfo = [[UITextView alloc] initWithFrame:CGRectMake(0.0f,0.0f,_tableView.frame.size.height, 50.0f)];
+			gestureInfo.font = [UIFont systemFontOfSize:12.0f];
 			gestureInfo.editable = NO;
 			gestureInfo.backgroundColor = [UIColor clearColor];
 			gestureInfo.text = @"These gestures are used on the dim window, and will only work if you have the dim window enabled";
