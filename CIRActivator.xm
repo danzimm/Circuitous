@@ -275,7 +275,7 @@ static void UpdatePreferences() {
 {
 	%orig;
 	NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"]?:[[NSMutableDictionary alloc] init];
-	if (![prefs objectForKey:@"0.9"]) {
+	if (![prefs objectForKey:@"1.6.1"]) {
 		[prefs setObject:@"OK" forKey:@"1.6.1"];
 		[prefs writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
 		UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Welcome to Circuitous 1.6.1" buttons:[NSArray arrayWithObjects:@"Settings", @"Later", nil] defaultButtonIndex:0 delegate:self context:NULL];
