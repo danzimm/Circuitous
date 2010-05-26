@@ -67,6 +67,18 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Gestures</string>
+			<key>isController</key>
+			<true/>
+			<key>bundle</key>
+			<string>CIRPrefs</string>
+			<key>use</key>
+			<integer>4</integer>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
 			<true/>

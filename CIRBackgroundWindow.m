@@ -19,6 +19,8 @@
 #define isWildcat ([[UIDevice currentDevice] respondsToSelector:@selector(isWildcat)] && [[UIDevice currentDevice] isWildcat])
 
 static int _orientation = 1;
+static int _backgroundIt = 0;
+static int _quitIt = 0;
 
 static int GetBytesToMalloc();
 
@@ -76,6 +78,10 @@ static BOOL stop = NO;
 	id orig = [super initWithFrame:[[UIScreen mainScreen] bounds]];
 	self.backgroundColor = [UIColor blackColor];
 	self.windowLevel = 280;
+	NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
+	_quitIt = [dict objectForKey:@"quit"] ? [[dict objectForKey:@"quit"] intValue] : 1;
+	_backgroundIt = [dict objectForKey:@"background"] ? [[dict objectForKey:@"background"] intValue] : 0;
+	[dict release];
 	return orig;
 }
 
@@ -124,13 +130,41 @@ static BOOL stop = NO;
 	// left gesture
 	if (start.x > currentPosition.x && deltaY <= kMaximumVariance && deltaX >= kMinimumGestureLength) {
 		switch (_orientation) {
+			case 1:
+				if (_backgroundIt == 2) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 2) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
+				break;
+			case 2:
+				if (_backgroundIt == 3) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 3) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
+				break;
 			case 3:
-				[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
-				[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				if (_backgroundIt == 0) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 0) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
 				break;
 			case 4:
-				[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
-				[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				if (_backgroundIt == 1) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 1) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
 				break;
 			default:
 				break;
@@ -139,13 +173,41 @@ static BOOL stop = NO;
 	// right gesture
 	else if (start.x < currentPosition.x && deltaY <= kMaximumVariance && deltaX >= kMinimumGestureLength) {
 		switch (_orientation) {
-			case 4:
-				[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
-				[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+			case 1:
+				if (_backgroundIt == 3) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 3) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
+				break;
+			case 2:
+				if (_backgroundIt == 2) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 2) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
 				break;
 			case 3:
-				[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
-				[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				if (_backgroundIt == 1) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 1) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
+				break;
+			case 4:
+				if (_backgroundIt == 0) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 0) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
 				break;
 			default:
 				break;
@@ -154,13 +216,41 @@ static BOOL stop = NO;
 	// up gesture
 	else if (start.y > currentPosition.y && deltaX <= kMaximumVariance && deltaY >= kMinimumGestureLength) {
 		switch (_orientation) {
-			case 2:
-				[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
-				[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
-				break;
 			case 1:
-				[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
-				[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				if (_backgroundIt == 1) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 1) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
+				break;
+			case 2:
+				if (_backgroundIt == 0) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 0) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
+				break;
+			case 3:
+				if (_backgroundIt == 2) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 2) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
+				break;
+			case 4:
+				if (_backgroundIt == 3) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 3) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
 				break;
 			default:
 				break;
@@ -170,12 +260,40 @@ static BOOL stop = NO;
 	else if (start.y < currentPosition.y && deltaX <= kMaximumVariance && deltaY >= kMinimumGestureLength) {
 		switch (_orientation) {
 			case 1:
-				[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
-				[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				if (_backgroundIt == 0) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 0) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
 				break;
 			case 2:
-				[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
-				[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				if (_backgroundIt == 1) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 1) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
+				break;
+			case 3:
+				if (_backgroundIt == 3) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 3) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
+				break;
+			case 4:
+				if (_backgroundIt == 2) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:NO];
+				} else if (_quitIt == 2) {
+					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
+					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				}
 				break;
 			default:
 				break;

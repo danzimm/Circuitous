@@ -31,7 +31,7 @@ static NSSet *_activeApps = nil;
 	appSet = [[NSSet alloc] initWithSet:apps];
 	float width = 11.0f;
 	int place = -1;
-//	_icons = [[NSMutableArray alloc] init];
+	_icons = [[NSMutableArray alloc] init];
 	for (NSString *app in apps) {
 		place++;
 		CIRIcon *icon = [[CIRIcon alloc] initWithIdentifier:app andXCoor:(11.0f + (place * multi)) animations:([prefs objectForKey:@"appanimations"] ? [[prefs objectForKey:@"appanimations"] boolValue] : YES) labels:([prefs objectForKey:@"icontext"] ? [[prefs objectForKey:@"icontext"] boolValue] : YES) badges:([prefs objectForKey:@"badges"] ? [[prefs objectForKey:@"badges"] boolValue] : YES)];
@@ -40,7 +40,7 @@ static NSSet *_activeApps = nil;
 		if ([_activeApps containsObject:app])
 			[icon setActive];
 		[self addSubview:icon];
-//		[_icons addObject:icon];
+		[_icons addObject:icon];
 	}
 	[prefs release];
 	width = width + 11.0f;
@@ -57,14 +57,12 @@ static NSSet *_activeApps = nil;
 
 - (void)dealloc
 {
-	/*
 	for (CIRIcon *icon in _icons) {
 		[_icons removeObject:icon];
 		[icon removeFromSuperview];
 		[icon release];
 	}
 	[_icons release];
-	 */
 	if (_activeApps) {
 		[_activeApps release];
 		_activeApps = nil;

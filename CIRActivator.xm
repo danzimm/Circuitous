@@ -18,6 +18,7 @@ static BOOL _onLock = YES;
 static BOOL _hasIcon = YES;
 static BOOL _uninstalled = NO;
 static int _orientation = 0;
+//static int _currentApp = 0;
 
 %class SBAwayController;
 %class SBIconModel;

@@ -79,7 +79,7 @@ static int getFreeMemory() {
 	NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
 	_favs = [prefs objectForKey:@"favs"] ? [[prefs objectForKey:@"favs"] boolValue] : YES;
 	_wide = [prefs objectForKey:@"wide"] ? [[prefs objectForKey:@"wide"] boolValue] : NO;
-	_dbl = [prefs objectForKey:@"dbl"] ? [[prefs objectForKey:@"dbl"] boolValue] : NO;
+	_dbl = [prefs objectForKey:@"dbl"] ? [[prefs objectForKey:@"dbl"] boolValue] : YES;
 	if isWildcat
 		_orientation = [(SpringBoard *)[UIApplication sharedApplication] activeInterfaceOrientation];
 	else {

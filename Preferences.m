@@ -5,6 +5,7 @@
 #import <QuartzCore/CALayer.h>
 #import <CoreFoundation/CFPreferences.h>
 #import <Foundation/Foundation.h>
+#import "UIModalView.h"
 
 #import <objc/runtime.h>
 
@@ -65,6 +66,8 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 	BOOL _double;
 	BOOL _favs;
 	int _transition;
+	int _quitIt;
+	int _backgroundIt;
 }
 //- (id)initForContentSize:(CGSize)size;
 - (id) view;
@@ -77,7 +80,6 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 - (void)setNavigationTitle:(NSString *)navigationTitle;
 - (void)loadFromSpecifier:(PSSpecifier *)specifier;
-- (void)buttonTapped:(UISwitch *)switchView;
 @end
 
 @implementation CIRPreferencesController
@@ -194,15 +196,32 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 {
 	_use = [[specifier propertyForKey:@"use"] intValue];
 	NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
-	if (_use == 0)
-		applicationsHere = [[NSMutableArray alloc] initWithArray:(NSArray *)[dict objectForKey:@"favorites"]];
-	else if (_use == 1)
-		applicationsHere = [[NSMutableArray alloc] initWithArray:(NSArray *)[dict objectForKey:@"hidden"]];	
-	else if (_use == 3) {
-		_favs = [dict objectForKey:@"favs"] ? [[dict objectForKey:@"favs"] boolValue] : YES;
-		_wide = [dict objectForKey:@"wide"] ? [[dict objectForKey:@"wide"] boolValue] : NO;
-		_double = [dict objectForKey:@"dbl"] ? [[dict objectForKey:@"dbl"] boolValue] : YES;
-		_transition = [dict objectForKey:@"trans"] ? [[dict objectForKey:@"trans"] intValue] : 0;
+	switch (_use) {
+		case 0:
+			applicationsHere = [[NSMutableArray alloc] initWithArray:(NSArray *)[dict objectForKey:@"favorites"]];
+			break;
+		case 1:
+			applicationsHere = [[NSMutableArray alloc] initWithArray:(NSArray *)[dict objectForKey:@"hidden"]];	
+			break;
+		case 3:
+			_favs = [dict objectForKey:@"favs"] ? [[dict objectForKey:@"favs"] boolValue] : YES;
+			_wide = [dict objectForKey:@"wide"] ? [[dict objectForKey:@"wide"] boolValue] : NO;
+			_double = [dict objectForKey:@"dbl"] ? [[dict objectForKey:@"dbl"] boolValue] : YES;
+			_transition = [dict objectForKey:@"trans"] ? [[dict objectForKey:@"trans"] intValue] : 0;
+			break;
+		case 4:
+			_quitIt = [dict objectForKey:@"quit"] ? [[dict objectForKey:@"quit"] intValue] : 1;
+			_backgroundIt = [dict objectForKey:@"background"] ? [[dict objectForKey:@"background"] intValue] : 0;
+			UITextView *gestureInfo = [[UITextView alloc] initWithFrame:CGRectMake(0.0f,0.0f,_tableView.frame.size.height, 40.0f)];
+			gestureInfo.font = [UIFont systemFontOfSize:16.0f];
+			gestureInfo.editable = NO;
+			gestureInfo.backgroundColor = [UIColor clearColor];
+			gestureInfo.text = @"These gestures are used on the dim window, and will only work if you have the dim window enabled";
+			_tableView.tableFooterView = gestureInfo;
+			[gestureInfo release];
+			break;
+		default:
+			break;
 	}
 	[dict release];
 	[self setNavigationTitle:[self navigationTitle]];
@@ -231,6 +250,9 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 		case 3:
 			return @"Displaying";
 			break;
+		case 4:
+			return @"Gestures";
+			break;
 		default:
 			return @"Error wrong use";
 			break;
@@ -247,16 +269,13 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 {
 	switch (_use) {
 		case 0:
-			return _tableView;
-			break;
 		case 1:
+		case 3:
+		case 4:
 			return _tableView;
 			break;
 		case 2: 
 			return _tutorial;
-			break;
-		case 3:
-			return _tableView;
 			break;
 		default:
 			return nil;
@@ -274,59 +293,91 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 
 - (id) tableView:(UITableView *)tableView titleForHeaderInSection:(int)section
 {
-	if (_use != 3) {
-		switch (section) {
-			case 0:
-				return @"System";
-				break;
-			case 1:
-			default:
-				return @"App Store";
-				break;
-		}
-	} else {
-		switch (section) {
-			case 1:
-				return @"Transition";
-				break;
-			default:
-				return nil;
-				break;
-		}
+	switch (_use) {
+		case 0:
+		case 1:
+			switch (section) {
+				case 0:
+					return @"System";
+					break;
+				case 1:
+					return @"App Store";
+					break;
+				default:
+					return nil;
+					break;
+			}
+			break;
+		case 3:
+			switch (section) {
+				case 1:
+					return @"Transition";
+					break;
+				default:
+					return nil;
+					break;
+			}
+			break;
+		case 4:
+			switch (section) {
+				case 0:
+					return @"Backgrounding Gesture";
+					break;
+				case 1:
+					return @"Quitting Gesture";
+				default:
+					return nil;
+					break;
+			}
+		default:
+			return nil;
 	}
+	
 }
 
 - (int) tableView:(UITableView *)tableView numberOfRowsInSection:(int)section
 {
-	if (_use != 3) {
-		switch (section) {
-			case 0:
-				return [systemApps count];
-				break;
-			default:
-			case 1:
-				return [appStoreApps count];
-				break;
-		}
-	} else {
-		switch (section) {
-			case 0:
-				if isWildcat {
-					if (_favs && _wide)
-						return 3;
-					else
-						return 2;
-				} else {
-					return 1;
-				}
-				break;
-			case 1:
-				return 3;
-				break;
-			default:
-				return 0;
-				break;
-		}
+	switch (_use) {
+		case 0:
+		case 1:
+			switch (section) {
+				case 0:
+					return [systemApps count];
+					break;
+				case 1:
+					return [appStoreApps count];
+					break;
+				default:
+					return 0;
+					break;
+			}
+			break;
+		case 3:
+			switch (section) {
+				case 0:
+					if isWildcat {
+						if (_favs && _wide)
+							return 3;
+						else
+							return 2;
+					} else {
+						return 1;
+					}
+					break;
+				case 1:
+					return 3;
+					break;
+				default:
+					return 0;
+					break;
+			}
+			break;
+		case 4:
+			return 4;
+			break;
+		default:
+			return 0;
+			break;
 	}
 }
 
@@ -341,171 +392,242 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
         cell = [[[CIRApplicationCell alloc] initWithFrame:CGRectZero reuseIdentifier:reuseIdentifier] autorelease];
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
     }
-	if (_use != 3) {
-		NSString *identifier;
-		switch (indexPath.section) {
-			case 0:
-				identifier = [systemApps objectAtIndex:indexPath.row];
-				break;
-			default:
-			case 1:
-				identifier = [appStoreApps objectAtIndex:indexPath.row];
-				break;
-		}
-		NSString *displayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(identifier);
-		[cell textLabel].text = displayName;
-		[displayName release];
-		
-		UIImage *icon = nil;
-		NSString *iconPath = SBSCopyIconImagePathForDisplayIdentifier(identifier);
-		if (iconPath != nil) {
-			icon = [UIImage imageWithContentsOfFile:iconPath];
-			[iconPath release];
-		}
-		
-		[cell imageView].image = icon;
-		
-		cell.accessoryType = [applicationsHere containsObject:identifier] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
-	} else {
-		UISwitch *switchView;
-		switch (indexPath.section) {
-			case 0:
-				switch (indexPath.row) {
-					case 0:
-						cell.textLabel.text = @"Favorites";
-						break;
-					case 1:
-						cell.textLabel.text = @"Wider";
-						break;
-					case 2:
-						cell.textLabel.text = @"Double Row";
-						break;
-					default:
-						break;
-				}
-				switchView = [[UISwitch alloc] initWithFrame:CGRectMake(0.0f,0.0f,10.0f,10.0f)];
-				switch (indexPath.row) {
-					case 0:
-						switchView.on = _favs;
-						break;
-					case 1:
-						switchView.on = _wide;
-						break;
-					case 2:
-						switchView.on = _double;
-						break;
-					default:
-						break;
-				}
-				[switchView addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchDown];
-				cell.accessoryView = switchView;
-				[switchView release];
-				break;
-			case 1:
-				switch (indexPath.row) {
-					case 0:
-						cell.textLabel.text = @"Fade In";
-						break;
-					case 1:
-						cell.textLabel.text = @"Pop In";
-						break;
-					case 2:
-						cell.textLabel.text = @"Slide In";
-						break;
-					default:
-						break;
-				}
-				if ((int)indexPath.row == _transition)
-					cell.accessoryType = UITableViewCellAccessoryCheckmark;
-				break;
-			default:
-				break;
-		}
+	NSString *identifier;
+	switch (_use) {
+		case 0:
+		case 1:
+			switch (indexPath.section) {
+				case 0:
+					identifier = [systemApps objectAtIndex:indexPath.row];
+					break;
+				default:
+				case 1:
+					identifier = [appStoreApps objectAtIndex:indexPath.row];
+					break;
+			}
+			NSString *displayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(identifier);
+			[cell textLabel].text = displayName;
+			[displayName release];
+			
+			UIImage *icon = nil;
+			NSString *iconPath = SBSCopyIconImagePathForDisplayIdentifier(identifier);
+			if (iconPath != nil) {
+				icon = [UIImage imageWithContentsOfFile:iconPath];
+				[iconPath release];
+			}
+			
+			[cell imageView].image = icon;
+			
+			cell.accessoryType = [applicationsHere containsObject:identifier] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+			break;
+		case 3:
+			switch (indexPath.section) {
+				case 0:
+					switch (indexPath.row) {
+						case 0:
+							cell.textLabel.text = @"Favorites";
+							if (_favs)
+								cell.accessoryType = UITableViewCellAccessoryCheckmark;
+							else
+								cell.accessoryType = UITableViewCellAccessoryNone;
+							break;
+						case 1:
+							cell.textLabel.text = @"Wider";
+							if (_wide)
+								cell.accessoryType = UITableViewCellAccessoryCheckmark;
+							else
+								cell.accessoryType = UITableViewCellAccessoryNone;
+							break;
+						case 2:
+							cell.textLabel.text = @"Double Row";
+							if (_double)
+								cell.accessoryType = UITableViewCellAccessoryCheckmark;
+							else
+								cell.accessoryType = UITableViewCellAccessoryNone;
+							break;
+						default:
+							break;
+					}
+					break;
+				case 1:
+					switch (indexPath.row) {
+						case 0:
+							cell.textLabel.text = @"Fade In";
+							break;
+						case 1:
+							cell.textLabel.text = @"Pop In";
+							break;
+						case 2:
+							cell.textLabel.text = @"Slide In";
+							break;
+						default:
+							break;
+					}
+					if ((int)indexPath.row == _transition)
+						cell.accessoryType = UITableViewCellAccessoryCheckmark;
+					break;
+				default:
+					break;
+			}
+			break;
+		case 4:
+			switch (indexPath.row) {
+				case 0:
+					cell.textLabel.text = @"Slide Down";
+					break;
+				case 1:
+					cell.textLabel.text = @"Slide Up";
+					break;
+				case 2:
+					cell.textLabel.text = @"Slide Left";
+					break;
+				case 3:
+					cell.textLabel.text = @"Slide Right";
+					break;
+				default:
+					break;
+			}
+			if ((indexPath.section == 0 && (int)indexPath.row == _backgroundIt) || (indexPath.section == 1 && (int)indexPath.row == _quitIt))
+				cell.accessoryType = UITableViewCellAccessoryCheckmark;
+			break;
+		default:
+			break;
 	}
 	return cell;
 }
 
-- (void)buttonTapped:(UISwitch *)switchView
-{
-	NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
-	UITableViewCell *cell = (UITableViewCell *)[switchView superview];
-	switch ([[self _tableView] indexPathForCell:cell].row) {
-		case 0:
-			[dict setObject:[NSNumber numberWithBool:!switchView.on] forKey:@"favs"];
-			_favs = !switchView.on;
-			if (_wide) {
-				if (switchView.on) {
-					[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
-				} else {
-					[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
-				}
-			}
-			break;
-		case 1:
-			[dict setObject:[NSNumber numberWithBool:!switchView.on] forKey:@"wide"];
-			_wide = !switchView.on;
-			if (_favs) {
-				if (switchView.on) {
-					[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
-				} else {
-					[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
-				}
-			}
-			break;
-		case 2:
-			[dict setObject:[NSNumber numberWithBool:!switchView.on] forKey:@"dbl"];
-			_double = !switchView.on;
-			break;
-		default:
-			break;
-	}
-	[dict writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
-	CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.zimm.circuitous.settingschanged"), NULL, NULL, true);
-	[dict release];	
-	[switchView setOn:!switchView.on animated:YES];
-}
-
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (_use == 3) {
-		if (indexPath.section == 1) {
-			[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
-			[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
-			[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
-			[[[self _tableView] cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
-			_transition = indexPath.row;
-			NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
-			[dict setObject:[NSNumber numberWithInt:_transition] forKey:@"trans"];
-			[dict writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
-			CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.zimm.circuitous.settingschanged"), NULL, NULL, true);
-			[dict release];
-		}			
-		[tableView deselectRowAtIndexPath:indexPath animated:YES];
-		return;
-	}
+	NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
+	UITableViewCell *cell = [[self _tableView] cellForRowAtIndexPath:indexPath];
 	NSString *identifier;
-	switch (indexPath.section) {
+	switch (_use) {
 		case 0:
-			identifier = [systemApps objectAtIndex:indexPath.row];
+		case 1:
+			switch (indexPath.section) {
+				case 0:
+					identifier = [systemApps objectAtIndex:indexPath.row];
+					break;
+				default:
+				case 1:
+					identifier = [appStoreApps objectAtIndex:indexPath.row];
+					break;
+			}
+			if (cell.accessoryType == UITableViewCellAccessoryNone) {
+				[applicationsHere addObject:identifier];
+				cell.accessoryType = UITableViewCellAccessoryCheckmark;
+			} else {
+				[applicationsHere removeObject:identifier];
+				cell.accessoryType = UITableViewCellAccessoryNone;
+			}
+			if (_use == 0)
+				[dict setObject:applicationsHere forKey:@"favorites"];
+			else
+				[dict setObject:applicationsHere forKey:@"hidden"];
+			break;
+		case 3:
+			switch (indexPath.section) {
+				case 1:
+					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+					[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+					_transition = indexPath.row;
+					[dict setObject:[NSNumber numberWithInt:_transition] forKey:@"trans"];
+					break;
+				case 0:
+					if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
+						cell.accessoryType = UITableViewCellAccessoryCheckmark;
+					else
+						cell.accessoryType = UITableViewCellAccessoryNone;
+					switch (indexPath.row) {
+						case 0:
+							if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
+								_favs = NO;
+							else
+								_favs = YES;
+							if (_favs && _wide) {
+								[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+							} else if (_wide) {
+								[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+							}
+							[dict setObject:[NSNumber numberWithBool:_favs] forKey:@"favs"];
+							break;
+						case 1:
+							if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
+								_wide = NO;
+							else
+								_wide = YES;
+							if (_favs && _wide) {
+								[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+							} else if (_favs) {
+								[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+							}
+							[dict setObject:[NSNumber numberWithBool:_wide] forKey:@"wide"];
+							break;
+						case 2:
+							if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
+								_double = NO;
+							else
+								_double = YES;
+							[dict setObject:[NSNumber numberWithBool:_double] forKey:@"dbl"];
+							break;
+						default:
+							break;
+					}
+					break;
+				default:
+					break;
+			}
+			break;
+		case 4:
+			[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:indexPath.section]] setAccessoryType:UITableViewCellAccessoryNone];
+			[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:indexPath.section]] setAccessoryType:UITableViewCellAccessoryNone];
+			[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:indexPath.section]] setAccessoryType:UITableViewCellAccessoryNone];
+			[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:indexPath.section]] setAccessoryType:UITableViewCellAccessoryNone];
+			[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+			switch (indexPath.section) {
+				case 0:
+					_backgroundIt = indexPath.row;
+					if (_backgroundIt == _quitIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the backgrounding and quitting gesture be the same. Please select another gesture for quitting."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_quitIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_quitIt] forKey:@"quit"];
+					}
+					[dict setObject:[NSNumber numberWithInt:_backgroundIt] forKey:@"background"];
+					break;
+				case 1:
+					_quitIt = indexPath.row;
+					if (_backgroundIt == _quitIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the backgrounding and quitting gesture be the same. Please select another gesture for backgrounding."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_backgroundIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_backgroundIt] forKey:@"background"];
+					}
+					[dict setObject:[NSNumber numberWithInt:_quitIt] forKey:@"quit"];
+					break;
+				default:
+					break;
+			}
 			break;
 		default:
-		case 1:
-			identifier = [appStoreApps objectAtIndex:indexPath.row];
 			break;
 	}
-    UITableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
-    if (cell.accessoryType == UITableViewCellAccessoryNone) {
-        [applicationsHere addObject:identifier];
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-    } else {
-		[applicationsHere removeObject:identifier];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
-	NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
-	if (_use == 0)
-		[dict setObject:applicationsHere forKey:@"favorites"];
-	else
-		[dict setObject:applicationsHere forKey:@"hidden"];
 	[dict writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
 	CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.zimm.circuitous.settingschanged"), NULL, NULL, true);
 	[dict release];
