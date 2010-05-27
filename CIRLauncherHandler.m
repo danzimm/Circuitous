@@ -43,6 +43,7 @@ static int _transition = 0;
 	NSArray *array = [[NSArray alloc] initWithArray:(NSArray *)[prefs objectForKey:@"favorites"]];
 	_mainView = [[CIRLauncherView alloc] initWithActiveApps:apps favoriteApps:array window:_backgroundWindow];
 	[array release];
+	[apps release];
 	_busy = NO;
 	[prefs release];
 	return orig;
