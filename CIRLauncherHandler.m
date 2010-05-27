@@ -39,7 +39,7 @@ static int _transition = 0;
 	} else {
 		_backgroundWindow = nil;
 	}
-	NSSet *apps = [[DSDisplayController sharedInstance] activeApplications];
+	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
 	NSArray *array = [[NSArray alloc] initWithArray:(NSArray *)[prefs objectForKey:@"favorites"]];
 	_mainView = [[CIRLauncherView alloc] initWithActiveApps:apps favoriteApps:array window:_backgroundWindow];
 	[array release];
@@ -176,7 +176,7 @@ static int _transition = 0;
 	if (_busy)
 		return NO;
 	_busy = YES;
-	NSSet *apps = [[DSDisplayController sharedInstance] activeApplications];
+	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
 	[_mainView relayoutWithApps:apps];
 	[self performSelector:@selector(stoppedRelaying) withObject:nil afterDelay:0.26f];
 	return YES;

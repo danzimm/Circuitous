@@ -1,0 +1,4 @@
+*.dylib
+*.deb
+obj
+CIRPrefs

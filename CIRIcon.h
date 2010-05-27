@@ -21,4 +21,5 @@
 - (void)setActive;
 - (NSString *)identifier;
 - (void)setActiveWithoutBox;
+
 @end

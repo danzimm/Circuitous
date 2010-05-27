@@ -68,6 +68,9 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 	int _transition;
 	int _quitIt;
 	int _backgroundIt;
+	int _cycleIt;
+	int _reverseIt;
+	int _randomIt;
 }
 //- (id)initForContentSize:(CGSize)size;
 - (id) view;
@@ -212,6 +215,9 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 		case 4:
 			_quitIt = [dict objectForKey:@"quit"] ? [[dict objectForKey:@"quit"] intValue] : 1;
 			_backgroundIt = [dict objectForKey:@"background"] ? [[dict objectForKey:@"background"] intValue] : 0;
+			_cycleIt = [dict objectForKey:@"cycle"] ? [[dict objectForKey:@"cycle"] intValue] : 3;
+			_reverseIt = [dict objectForKey:@"reverse"] ? [[dict objectForKey:@"reverse"] intValue] : 2;
+			_randomIt = [dict objectForKey:@"random"] ? [[dict objectForKey:@"random"] intValue] : 5;
 			UITextView *gestureInfo = [[UITextView alloc] initWithFrame:CGRectMake(0.0f,0.0f,_tableView.frame.size.height, 50.0f)];
 			gestureInfo.font = [UIFont systemFontOfSize:12.0f];
 			gestureInfo.editable = NO;
@@ -288,7 +294,10 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 }
 
 - (int) numberOfSectionsInTableView:(UITableView *)tableView {
-	return 2;
+	if (_use == 4)
+		return 5;
+	else
+		return 2;
 }
 
 - (id) tableView:(UITableView *)tableView titleForHeaderInSection:(int)section
@@ -325,6 +334,16 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 					break;
 				case 1:
 					return @"Quitting Gesture";
+					break;
+				case 2:
+					return @"Cycling Gesture";
+					break;
+				case 3:
+					return @"Reverse Cycling Gesture";
+					break;
+				case 4:
+					return @"Random Cycling Gesture";
+					break;
 				default:
 					return nil;
 					break;
@@ -361,7 +380,10 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 						else
 							return 2;
 					} else {
-						return 1;
+						if (_favs)
+							return 2;
+						else
+							return 1;
 					}
 					break;
 				case 1:
@@ -423,30 +445,51 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 		case 3:
 			switch (indexPath.section) {
 				case 0:
-					switch (indexPath.row) {
-						case 0:
-							cell.textLabel.text = @"Favorites";
-							if (_favs)
-								cell.accessoryType = UITableViewCellAccessoryCheckmark;
-							else
-								cell.accessoryType = UITableViewCellAccessoryNone;
-							break;
-						case 1:
-							cell.textLabel.text = @"Wider";
-							if (_wide)
-								cell.accessoryType = UITableViewCellAccessoryCheckmark;
-							else
-								cell.accessoryType = UITableViewCellAccessoryNone;
-							break;
-						case 2:
-							cell.textLabel.text = @"Double Row";
-							if (_double)
-								cell.accessoryType = UITableViewCellAccessoryCheckmark;
-							else
-								cell.accessoryType = UITableViewCellAccessoryNone;
-							break;
-						default:
-							break;
+					if isWildcat {
+						switch (indexPath.row) {
+							case 0:
+								cell.textLabel.text = @"Favorites";
+								if (_favs)
+									cell.accessoryType = UITableViewCellAccessoryCheckmark;
+								else
+									cell.accessoryType = UITableViewCellAccessoryNone;
+								break;
+							case 1:
+								cell.textLabel.text = @"Wider";
+								if (_wide)
+									cell.accessoryType = UITableViewCellAccessoryCheckmark;
+								else
+									cell.accessoryType = UITableViewCellAccessoryNone;
+								break;
+							case 2:
+								cell.textLabel.text = @"Double Row";
+								if (_double)
+									cell.accessoryType = UITableViewCellAccessoryCheckmark;
+								else
+									cell.accessoryType = UITableViewCellAccessoryNone;
+								break;
+							default:
+								break;
+						}
+					} else {
+						switch (indexPath.row) {
+							case 0:
+								cell.textLabel.text = @"Favorites";
+								if (_favs)
+									cell.accessoryType = UITableViewCellAccessoryCheckmark;
+								else
+									cell.accessoryType = UITableViewCellAccessoryNone;
+								break;
+							case 1:
+								cell.textLabel.text = @"Double Row";
+								if (_double)
+									cell.accessoryType = UITableViewCellAccessoryCheckmark;
+								else
+									cell.accessoryType = UITableViewCellAccessoryNone;
+								break;
+							default:
+								break;
+						}
 					}
 					break;
 				case 1:
@@ -487,7 +530,7 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 				default:
 					break;
 			}
-			if ((indexPath.section == 0 && (int)indexPath.row == _backgroundIt) || (indexPath.section == 1 && (int)indexPath.row == _quitIt))
+			if ((indexPath.section == 0 && (int)indexPath.row == _backgroundIt) || (indexPath.section == 1 && (int)indexPath.row == _quitIt) || (indexPath.section == 2 && (int)indexPath.row == _cycleIt) || (indexPath.section == 3 && (int)indexPath.row == _reverseIt) || (indexPath.section == 1 && (int)indexPath.row == _randomIt))
 				cell.accessoryType = UITableViewCellAccessoryCheckmark;
 			break;
 		default:
@@ -540,40 +583,66 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 						cell.accessoryType = UITableViewCellAccessoryCheckmark;
 					else
 						cell.accessoryType = UITableViewCellAccessoryNone;
-					switch (indexPath.row) {
-						case 0:
-							if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
-								_favs = NO;
-							else
-								_favs = YES;
-							if (_favs && _wide) {
-								[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
-							} else if (_wide) {
-								[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
-							}
-							[dict setObject:[NSNumber numberWithBool:_favs] forKey:@"favs"];
-							break;
-						case 1:
-							if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
-								_wide = NO;
-							else
-								_wide = YES;
-							if (_favs && _wide) {
-								[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
-							} else if (_favs) {
-								[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
-							}
-							[dict setObject:[NSNumber numberWithBool:_wide] forKey:@"wide"];
-							break;
-						case 2:
-							if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
-								_double = NO;
-							else
-								_double = YES;
-							[dict setObject:[NSNumber numberWithBool:_double] forKey:@"dbl"];
-							break;
-						default:
-							break;
+					if isWildcat {
+						switch (indexPath.row) {
+							case 0:
+								if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
+									_favs = NO;
+								else
+									_favs = YES;
+								if (_favs && _wide) {
+									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+								} else if (_wide) {
+									[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+								}
+								[dict setObject:[NSNumber numberWithBool:_favs] forKey:@"favs"];
+								break;
+							case 1:
+								if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
+									_wide = NO;
+								else
+									_wide = YES;
+								if (_favs && _wide) {
+									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+								} else if (_favs) {
+									[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+								}
+								[dict setObject:[NSNumber numberWithBool:_wide] forKey:@"wide"];
+								break;
+							case 2:
+								if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
+									_double = NO;
+								else
+									_double = YES;
+								[dict setObject:[NSNumber numberWithBool:_double] forKey:@"dbl"];
+								break;
+							default:
+								break;
+						}
+					} else {
+						switch (indexPath.row) {
+							case 0:
+								if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
+									_favs = NO;
+								else
+									_favs = YES;
+								if (_favs) {
+									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+								} else if (_wide) {
+									[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+								}
+								[dict setObject:[NSNumber numberWithBool:_favs] forKey:@"favs"];
+								break;
+							case 1:
+								if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
+									_double = NO;
+								else
+									_double = YES;
+								[dict setObject:[NSNumber numberWithBool:_double] forKey:@"dbl"];
+								break;
+							default:
+								break;
+						}
 					}
 					break;
 				default:
@@ -595,31 +664,262 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
 						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
 						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
-						[alert setBodyText:@"You cannot have the backgrounding and quitting gesture be the same. Please select another gesture for quitting."];
+						[alert setBodyText:@"You cannot have the backgrounding and quitting gestures be the same. Please select another gesture for quitting."];
 						[alert setNumberOfRows:1];
 						[alert popupAlertAnimated:YES];
 						[alert release];
 						_quitIt = 5;
 						[dict setObject:[NSNumber numberWithInt:_quitIt] forKey:@"quit"];
+					} else if (_backgroundIt == _cycleIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the backgrounding and the cycling gestures be the same. Please select another gesture for cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_cycleIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_cycleIt] forKey:@"cycle"];
+					} else if (_backgroundIt == _reverseIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the backgrounding and the reverse cycling gestures be the same. Please select another gesture for reverse cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_reverseIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_reverseIt] forKey:@"reverse"];
+					} else if (_backgroundIt == _randomIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the backgrounding and the random cycling gestures be the same. Please select another gesture for random cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_randomIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_randomIt] forKey:@"random"];
 					}
 					[dict setObject:[NSNumber numberWithInt:_backgroundIt] forKey:@"background"];
 					break;
 				case 1:
 					_quitIt = indexPath.row;
-					if (_backgroundIt == _quitIt) {
+					if (_quitIt == _backgroundIt) {
 						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
 						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
 						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
 						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
 						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
-						[alert setBodyText:@"You cannot have the backgrounding and quitting gesture be the same. Please select another gesture for backgrounding."];
+						[alert setBodyText:@"You cannot have the quiting and backgrounding gestures be the same. Please select another gesture for backgrounding."];
 						[alert setNumberOfRows:1];
 						[alert popupAlertAnimated:YES];
 						[alert release];
 						_backgroundIt = 5;
 						[dict setObject:[NSNumber numberWithInt:_backgroundIt] forKey:@"background"];
+					} else if (_quitIt == _cycleIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the quitting and the cycling gestures be the same. Please select another gesture for cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_cycleIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_cycleIt] forKey:@"cycle"];
+					} else if (_quitIt == _reverseIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the quitting and the reverse cycling gestures be the same. Please select another gesture for reverse cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_reverseIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_reverseIt] forKey:@"reverse"];
+					} else if (_quitIt == _randomIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the quitting and random cycling gestures be the same. Please select another gesture for random cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_randomIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_randomIt] forKey:@"random"];
 					}
 					[dict setObject:[NSNumber numberWithInt:_quitIt] forKey:@"quit"];
+					break;
+				case 2:
+					_cycleIt = indexPath.row;
+					if (_cycleIt == _backgroundIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the cycling and backgrounding gestures be the same. Please select another gesture for backgrounding."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_backgroundIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_backgroundIt] forKey:@"background"];
+					} else if (_cycleIt == _quitIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the cycling and the quitting gestures be the same. Please select another gesture for quitting."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_quitIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_quitIt] forKey:@"quit"];
+					} else if (_cycleIt == _reverseIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the cycling and the reverse cycling gestures be the same. Please select another gesture for reverse cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_reverseIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_reverseIt] forKey:@"reverse"];
+					} else if (_cycleIt == _randomIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the cycling and random cycling gestures be the same. Please select another gesture for random cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_randomIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_randomIt] forKey:@"random"];
+					}
+					[dict setObject:[NSNumber numberWithInt:_cycleIt] forKey:@"cycle"];
+					break;
+				case 3:
+					_reverseIt = indexPath.row;
+					if (_reverseIt == _backgroundIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the reverse cycling and backgrounding gestures be the same. Please select another gesture for backgrounding."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_backgroundIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_backgroundIt] forKey:@"background"];
+					} else if (_reverseIt == _quitIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the reverse cycling and the cycling gestures be the same. Please select another gesture for cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_quitIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_quitIt] forKey:@"quit"];
+					} else if (_reverseIt == _cycleIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the reverse cycling and the cycling gestures be the same. Please select another gesture for cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_cycleIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_cycleIt] forKey:@"cycle"];
+					} else if (_reverseIt == _randomIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the reverse cycling and random cycling gestures be the same. Please select another gesture for random cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_randomIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_randomIt] forKey:@"random"];
+					}
+					[dict setObject:[NSNumber numberWithInt:_reverseIt] forKey:@"reverse"];
+					break;
+				case 4:
+					_randomIt = indexPath.row;
+					if (_randomIt == _backgroundIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the random cycling and backgrounding gestures be the same. Please select another gesture for backgrounding."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_backgroundIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_backgroundIt] forKey:@"background"];
+					} else if (_randomIt == _quitIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the random cycling and the cycling gestures be the same. Please select another gesture for cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_quitIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_quitIt] forKey:@"quit"];
+					} else if (_randomIt == _cycleIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the random cycling and the cycling gestures be the same. Please select another gesture for cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_cycleIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_cycleIt] forKey:@"cycle"];
+					} else if (_randomIt == _reverseIt) {
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
+						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
+						[alert setBodyText:@"You cannot have the random cycling and reverse cycling gestures be the same. Please select another gesture for reverse cycling."];
+						[alert setNumberOfRows:1];
+						[alert popupAlertAnimated:YES];
+						[alert release];
+						_reverseIt = 5;
+						[dict setObject:[NSNumber numberWithInt:_reverseIt] forKey:@"reverse"];
+					}
+					[dict setObject:[NSNumber numberWithInt:_randomIt] forKey:@"random"];
 					break;
 				default:
 					break;

@@ -9,12 +9,12 @@
 
 #define isWildcat ([[UIDevice currentDevice] respondsToSelector:@selector(isWildcat)] && [[UIDevice currentDevice] isWildcat])
 
-static NSSet *_activeApps = nil;
+static NSArray *_activeApps = nil;
 
 @implementation CIRScrollView
 @synthesize appSet;
 
-- (id)initWithFrame:(CGRect)frame apps:(NSSet *)apps active:(BOOL)active
+- (id)initWithFrame:(CGRect)frame apps:(NSArray *)apps active:(BOOL)active
 {
 	id orig = [super initWithFrame:frame];
 	float multi;
@@ -26,10 +26,10 @@ static NSSet *_activeApps = nil;
 	if (active) {
 		if (_activeApps)
 			[_activeApps release];
-		_activeApps = [[NSSet alloc] initWithSet:apps];
+		_activeApps = [[NSArray alloc] initWithArray:apps];
 	}
 	BOOL closeBox = [prefs objectForKey:@"close"] ? [[prefs objectForKey:@"close"] boolValue] : YES;
-	appSet = [[NSSet alloc] initWithSet:apps];
+	appSet = [[NSArray alloc] initWithArray:apps];
 	float width = 11.0f;
 	int place = -1;
 	for (NSString *app in apps) {

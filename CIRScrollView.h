@@ -4,8 +4,8 @@
 {
 }
 
-- (id)initWithFrame:(CGRect)frame apps:(NSSet *)apps active:(BOOL)active;
+- (id)initWithFrame:(CGRect)frame apps:(NSArray *)apps active:(BOOL)active;
 
-@property (nonatomic, retain) NSSet *appSet;
+@property (nonatomic, retain) NSArray *appSet;
 
 @end

@@ -5,11 +5,13 @@
 
 #import "DSDisplayController.h"
 #import "UIModalView.h"
+#include <stdlib.h>
 
 @interface SpringBoard (PadLauncher)
 - (void)showCircuitous;
 - (void)hideCircuitous;
 - (int)activeInterfaceOrientation;
+- (void)cycleAppsWithPlace:(int)place;
 @end
 
 @interface UIDevice (iPad)
@@ -21,6 +23,9 @@
 static int _orientation = 1;
 static int _backgroundIt = 0;
 static int _quitIt = 0;
+static int _cycleIt = 0;
+static int _reverseIt = 0;
+static int _randomIt = 0;
 
 static int GetBytesToMalloc();
 
@@ -81,6 +86,9 @@ static BOOL stop = NO;
 	NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
 	_quitIt = [dict objectForKey:@"quit"] ? [[dict objectForKey:@"quit"] intValue] : 1;
 	_backgroundIt = [dict objectForKey:@"background"] ? [[dict objectForKey:@"background"] intValue] : 0;
+	_cycleIt = [dict objectForKey:@"cycle"] ? [[dict objectForKey:@"cycle"] intValue] : 3;
+	_reverseIt = [dict objectForKey:@"reverse"] ? [[dict objectForKey:@"reverse"] intValue] : 2;
+	_randomIt = [dict objectForKey:@"random"] ? [[dict objectForKey:@"random"] intValue] : 5;
 	[dict release];
 	return orig;
 }
@@ -137,6 +145,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 2) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 2) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 2) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 2) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 2:
@@ -146,6 +164,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 3) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 3) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 3) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 3) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 3:
@@ -155,6 +183,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 0) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 0) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 0) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 0) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 4:
@@ -164,6 +202,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 1) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 1) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 1) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 1) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			default:
@@ -180,6 +228,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 3) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 3) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 3) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 3) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 2:
@@ -189,6 +247,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 2) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 2) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 2) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 2) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 3:
@@ -198,6 +266,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 1) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 1) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 1) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 1) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 4:
@@ -207,6 +285,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 0) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 0) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 0) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 0) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			default:
@@ -223,6 +311,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 1) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 1) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 1) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 1) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 2:
@@ -232,6 +330,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 0) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 0) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 0) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 0) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 3:
@@ -241,6 +349,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 2) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 2) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 2) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 2) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 4:
@@ -250,6 +368,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 3) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 3) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 3) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 3) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			default:
@@ -266,6 +394,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 0) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 0) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 0) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 0) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 2:
@@ -275,6 +413,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 1) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 1) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 1) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 1) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 3:
@@ -284,6 +432,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 3) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 3) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 3) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 3) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			case 4:
@@ -293,6 +451,16 @@ static BOOL stop = NO;
 				} else if (_quitIt == 2) {
 					[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forApplication:[[DSDisplayController sharedInstance] activeApp]];
 					[[DSDisplayController sharedInstance] exitApplication:[[DSDisplayController sharedInstance] activeApp] animated:YES force:YES];
+				} else if (_cycleIt == 2) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+				} else if (_reverseIt == 2) {
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+				} else if (_randomIt == 2) {
+					int rand = (arc4random() % 10) + 1;
+					if (rand > 5) {
+						rand = -(rand - 5);
+					}
+					[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
 				}
 				break;
 			default:

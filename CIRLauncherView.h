@@ -21,8 +21,8 @@
 	CGRect mainRect;
 }
 
-- (id)initWithActiveApps:(NSSet *)apps favoriteApps:(NSArray *)apps2 window:(UIWindow *)window;
-- (void)relayoutWithApps:(NSSet *)apps;
+- (id)initWithActiveApps:(NSArray *)apps favoriteApps:(NSArray *)apps2 window:(UIWindow *)window;
+- (void)relayoutWithApps:(NSArray *)apps;
 - (void)reorientateWithPlace:(int)place;
 
 @end

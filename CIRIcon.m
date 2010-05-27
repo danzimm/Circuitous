@@ -11,6 +11,7 @@
 #import "CIRScrollView.h"
 
 #import <objc/runtime.h>
+#import "UIModalView.h"
 
 @interface SBIcon (iPad)
 - (UIImage *)getIconImage:(int)image;
@@ -171,6 +172,7 @@ static CGPoint _start;
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	[super touchesEnded:touches withEvent:event];
+	UITouch *touch = [touches anyObject];
 	self.alpha = 1.0f;
 	if (_holdTimer || (!_holdTimer && !_iconClose)) {
 		[_holdTimer invalidate];
@@ -180,8 +182,8 @@ static CGPoint _start;
 			if isWildcat
 				size = 30.0f;
 			else
-				size = 10.0f;
-			if (!CGRectContainsPoint(CGRectMake(-10.0f, -10.0f, size, size), (CGPoint)[(UITouch *)[touches anyObject] locationInView:self])) {
+				size = 20.0f;
+			if (!CGRectContainsPoint(CGRectMake(-10.0f, -10.0f, size, size), [touch locationInView:self])) {
 				[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
 				[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:_identifier animated:_animate];
 				[(SpringBoard *)[UIApplication sharedApplication] hideCircuitous];
@@ -200,9 +202,9 @@ static CGPoint _start;
 	} else {
 		if (self.center.y < 0.0f || self.center.y > [self superview].frame.size.height) {
 			if ([_identifier isEqualToString:@"com.apple.springboard"])
-					[(SpringBoard *)[UIApplication sharedApplication] relaunchSpringBoard];
-				[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forDisplayIdentifier:_identifier];
-				[[DSDisplayController sharedInstance] exitAppWithDisplayIdentifier:_identifier animated:_animate force:YES];
+				[(SpringBoard *)[UIApplication sharedApplication] relaunchSpringBoard];
+			[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forDisplayIdentifier:_identifier];
+			[[DSDisplayController sharedInstance] exitAppWithDisplayIdentifier:_identifier animated:_animate force:YES];
 		} else {
 			[UIView beginAnimations:nil context:NULL];
 			self.center = oldCenter;
@@ -211,6 +213,27 @@ static CGPoint _start;
 			[(CIRScrollView *)[self superview] setScrollEnabled:YES];
 			[UIView commitAnimations];
 		}
+	}
+}
+
+-(void)modalView:(id)view didDismissWithButtonIndex:(int)buttonIndex
+{
+	switch (buttonIndex) {
+		case 0:
+			[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
+			[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:_identifier animated:_animate];
+			[(SpringBoard *)[UIApplication sharedApplication] hideCircuitous];
+			break;
+		case 1:
+			if (_iconClose)
+				[_iconClose animate];
+			if ([_identifier isEqualToString:@"com.apple.springboard"])
+				[(SpringBoard *)[UIApplication sharedApplication] relaunchSpringBoard];
+			[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forDisplayIdentifier:_identifier];
+			[[DSDisplayController sharedInstance] exitAppWithDisplayIdentifier:_identifier animated:_animate force:YES];
+			break;
+		default:
+			break;
 	}
 }
 

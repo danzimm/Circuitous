@@ -74,7 +74,7 @@ static int getFreeMemory() {
 
 @implementation CIRLauncherView
 
-- (id)initWithActiveApps:(NSSet *)apps favoriteApps:(NSArray *)apps2 window:(UIWindow *)window
+- (id)initWithActiveApps:(NSArray *)apps favoriteApps:(NSArray *)apps2 window:(UIWindow *)window
 {
 	NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
 	_favs = [prefs objectForKey:@"favs"] ? [[prefs objectForKey:@"favs"] boolValue] : YES;
@@ -116,7 +116,7 @@ static int getFreeMemory() {
 			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,250.0f)];
 		}
 	} else {
-		if (_favs) {
+		if (_favs && _dbl) {
 			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
 			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,175.0f)];
 		} else {
@@ -130,15 +130,15 @@ static int getFreeMemory() {
 	_backgroundView.frame = self.frame;
 	[self addSubview:_backgroundView];
 	_sb = [prefs objectForKey:@"springboard"] ? [[prefs objectForKey:@"springboard"] boolValue] : YES;
-	NSMutableSet *tmp = [[NSMutableSet alloc] initWithSet:apps];
+	NSMutableArray *tmp = [[NSMutableArray alloc] initWithArray:apps];
 	if (_sb)
-		[tmp addObject:@"com.apple.springboard"];
+		[tmp insertObject:@"com.apple.springboard" atIndex:0];
 	[apps release];
 	for (NSString *app in (NSArray *)[prefs objectForKey:@"hidden"]) {
 		if ([tmp containsObject:app])
 			[tmp removeObject:app];
 	}
-	apps = [[NSSet alloc] initWithSet:tmp];
+	apps = [[NSArray alloc] initWithArray:tmp];
 	[tmp release];
 	_freememory = [prefs objectForKey:@"freememory"] ? [[prefs objectForKey:@"freememory"] boolValue] : YES;
 	if (_freememory) {
@@ -169,20 +169,26 @@ static int getFreeMemory() {
 		else
 			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
 	} else {
-		_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
+		if (_favs && !_dbl)
+			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,155.0f,80.0f) apps:apps active:YES];
+		else
+			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
 	}
 	[self addSubview:_activeAppsScrollView];
 	if (_favs) {
 		if isWildcat {
 			if (!_wide)
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f, 130.0f, 380.0f, 115.0f) apps:[NSSet setWithArray:apps2] active:NO];
+				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f, 130.0f, 380.0f, 115.0f) apps:apps2 active:NO];
 			else if (_dbl)
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,130.0f,748.0f,115.0f) apps:[NSSet setWithArray:apps2] active:NO];
+				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,130.0f,748.0f,115.0f) apps:apps2 active:NO];
 			else
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(748.0f/2 + 5.0f, 5.0f, 748.0f/2 - 5.0f, 115.0f) apps:[NSSet setWithArray:apps2] active:NO];
+				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(748.0f/2 + 5.0f, 5.0f, 748.0f/2 - 5.0f, 115.0f) apps:apps2 active:NO];
 
 		} else {
-			_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f, 90.0f, 310.0f, 80.0f) apps:[NSSet setWithArray:apps2] active:NO];
+			if (!_dbl)
+				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(155.0f, 5.0f, 155.0f, 80.0f) apps:apps2 active:NO];
+			else
+				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f, 90.0f, 310.0f, 80.0f) apps:apps2 active:NO];
 		}
 		[self addSubview:_favoriteAppsScrollView];
 	}
@@ -212,21 +218,21 @@ static int getFreeMemory() {
 	_fm.text = [NSString stringWithFormat:@"%d mb", getFreeMemory()];
 }
 
-- (void)relayoutWithApps:(NSSet *)apps
+- (void)relayoutWithApps:(NSArray *)apps
 {
-	NSMutableSet *tmp = [[NSMutableSet alloc] initWithSet:apps];
+	NSMutableArray *tmp = [[NSMutableArray alloc] initWithArray:apps];
 	if (_sb)
-		[tmp addObject:@"com.apple.springboard"];
+		[tmp insertObject:@"com.apple.springboard" atIndex:0];
 	[apps release];
 	NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
 	for (NSString *app in (NSArray *)[prefs objectForKey:@"hidden"]) {
 		if ([tmp containsObject:app])
 			[tmp removeObject:app];
 	}
-	apps = [[NSSet alloc] initWithSet:tmp];
+	apps = [[NSArray alloc] initWithArray:tmp];
 	[tmp release];
 	[prefs release];
-	NSSet *tmp1 = [[NSSet alloc] initWithSet:[_favoriteAppsScrollView appSet]];
+	NSArray *tmp1 = [[NSArray alloc] initWithArray:[_favoriteAppsScrollView appSet]];
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.25f];
 	_activeAppsScrollView.alpha = 0.0f;
