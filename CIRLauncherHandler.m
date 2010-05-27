@@ -28,7 +28,7 @@ static int _transition = 0;
 
 - (id)init
 {
-	id orig = [super init];
+	self = [super init];
 	NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
 	_window = [prefs objectForKey:@"window"] ? [[prefs objectForKey:@"window"] boolValue] : YES;
 	_transition = [prefs objectForKey:@"trans"] ? [[prefs objectForKey:@"trans"] intValue] : 0;
@@ -42,11 +42,13 @@ static int _transition = 0;
 	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
 	NSArray *array = [[NSArray alloc] initWithArray:(NSArray *)[prefs objectForKey:@"favorites"]];
 	_mainView = [[CIRLauncherView alloc] initWithActiveApps:apps favoriteApps:array window:_backgroundWindow];
+	NSLog(@"Got main view");
 	[array release];
-	[apps release];
+	NSLog(@"Released the array");
 	_busy = NO;
 	[prefs release];
-	return orig;
+	NSLog(@"released prefs");
+	return self;
 }
 
 - (BOOL)animateIn
@@ -55,6 +57,7 @@ static int _transition = 0;
 		return NO;
 	_busy = YES;
 	CGAffineTransform original = _mainView.transform;
+	CGRect old;
 	switch (_transition) {
 		case 0:
 			_mainView.alpha = 0.0f;
@@ -81,6 +84,9 @@ static int _transition = 0;
 			[UIView commitAnimations];
 			break;
 		case 2:
+			old = _mainView.frame;
+			[_mainView setFrame:CGRectMake(-_mainView.frame.size.width, - _mainView.frame.size.height, _mainView.frame.size.width, _mainView.frame.size.height)];
+			/*
 			if ((isWildcat && _mainView.frame.origin.y > 700.0f))
 				[_mainView setTransform:CGAffineTransformConcat(original,CGAffineTransformMakeTranslation(0.0f, _mainView.frame.size.height))];
 			else if isWildcat
@@ -89,12 +95,13 @@ static int _transition = 0;
 				[_mainView setTransform:CGAffineTransformConcat(original,CGAffineTransformMakeTranslation(0.0f, _mainView.frame.size.height))];
 			else
 				[_mainView setTransform:CGAffineTransformConcat(original,CGAffineTransformMakeTranslation(0.0f, -_mainView.frame.size.height))];
+			 */
 			_mainView.hidden = NO;
 			[UIView beginAnimations:nil context:NULL];
 			[UIView setAnimationDuration:0.2f];
 			[UIView setAnimationDelegate:self];
 			[UIView setAnimationDidStopSelector:@selector(animationDidStopIn:finished:context:)];
-			[_mainView setTransform:CGAffineTransformConcat(original,CGAffineTransformMakeTranslation(0.0f,0.0f))];
+			[_mainView setFrame:old];
 			if (_window)
 				_backgroundWindow.alpha = 0.5f;
 			[UIView commitAnimations];
@@ -115,7 +122,6 @@ static int _transition = 0;
 	if (_busy)
 		return NO;
 	_busy = YES;
-	CGAffineTransform original = _mainView.transform;
 	switch (_transition) {
 		case 0:
 			[UIView beginAnimations:nil context:NULL];
@@ -142,6 +148,7 @@ static int _transition = 0;
 			[UIView setAnimationDuration:0.2f];
 			[UIView setAnimationDelegate:self];
 			[UIView setAnimationDidStopSelector:@selector(animationDidStopOut:finished:context:)];
+			/*
 			if ((isWildcat && _mainView.frame.origin.y > 700.0f))
 				[_mainView setTransform:CGAffineTransformConcat(original,CGAffineTransformMakeTranslation(0.0f, _mainView.frame.size.height))];
 			else if isWildcat
@@ -150,6 +157,8 @@ static int _transition = 0;
 				[_mainView setTransform:CGAffineTransformConcat(original,CGAffineTransformMakeTranslation(0.0f, _mainView.frame.size.height))];
 			else
 				[_mainView setTransform:CGAffineTransformConcat(original,CGAffineTransformMakeTranslation(0.0f, -_mainView.frame.size.height))];
+			 */
+			[_mainView setFrame:CGRectMake(-_mainView.frame.size.width, -_mainView.frame.size.height, _mainView.frame.size.width, _mainView.frame.size.height)];
 			if (_window)
 				_backgroundWindow.alpha = 0.0f;
 			[UIView commitAnimations];

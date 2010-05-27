@@ -67,7 +67,9 @@ static void UpdatePreferences() {
 		return;
 	if (!sharedLauncher) {
 		sharedLauncher = [[CIRLauncherHandler alloc] init];
+		NSLog(@"Made the launcher");
 		[sharedLauncher animateIn];
+		NSLog(@"Animated in");
 	} else if ([sharedLauncher animateOut]) {
 		[sharedLauncher release];
 		sharedLauncher = nil;
