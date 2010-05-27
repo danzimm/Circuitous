@@ -12,6 +12,13 @@
 @interface PSViewController (iPhone)
 - (id)initForContentSize:(CGSize)size;
 - (void)viewWillBecomeVisible:(void*)source;
+-(void)showLeftButton:(id)button withStyle:(int)style rightButton:(id)button3 withStyle:(int)style4;
+-(void)navigationBarButtonClicked:(int)clicked;
+- (void)pushNavigationItem:(id)item;
+@end
+
+@interface UITableView (tabview)
+- (BOOL)editing;
 @end
 
 @interface UIDevice (iPad)
@@ -37,24 +44,12 @@
     self.imageView.frame = CGRectMake(4.0f, 4.0f, size.height - 8.0f, size.height - 8.0f);
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
 }
+
 @end
 
 extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *identifier);
 extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier);
-/*
-static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
-{
-    NSInteger ret;
-	
-    NSString *name_a = SBSCopyLocalizedApplicationNameForDisplayIdentifier(a);
-    NSString *name_b = SBSCopyLocalizedApplicationNameForDisplayIdentifier(b);
-    ret = [name_a caseInsensitiveCompare:name_b];
-    [name_a release];
-    [name_b release];
-	
-    return ret;
-}
-*/
+
 @interface CIRPreferencesController : PSViewController <UITableViewDelegate, UITableViewDataSource> {
 	UITableView *_tableView;
 	NSMutableArray *systemApps;
@@ -71,8 +66,8 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 	int _cycleIt;
 	int _reverseIt;
 	int _randomIt;
+	CGSize sizeIs;
 }
-//- (id)initForContentSize:(CGSize)size;
 - (id) view;
 - (NSString *) navigationTitle;
 - (id)_tableView;
@@ -83,12 +78,14 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 - (void)setNavigationTitle:(NSString *)navigationTitle;
 - (void)loadFromSpecifier:(PSSpecifier *)specifier;
+- (void)buttonTapped:(UIButton *)button;
 @end
 
 @implementation CIRPreferencesController
 
 - (id)initForContentSize:(CGSize)size
 {
+	sizeIs = size;
 	return [self init];
 }
 
@@ -202,6 +199,13 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 	switch (_use) {
 		case 0:
 			applicationsHere = [[NSMutableArray alloc] initWithArray:(NSArray *)[dict objectForKey:@"favorites"]];
+			UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+			button.selected = NO;
+			[button setTitle:@"Edit" forState:UIControlStateNormal];
+			[button setTitle:@"Done" forState:UIControlStateSelected];
+			button.frame = CGRectMake(0.0f,0.0f,_tableView.frame.size.width, 40.0f);
+			[button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchDown];
+			_tableView.tableHeaderView = button;
 			break;
 		case 1:
 			applicationsHere = [[NSMutableArray alloc] initWithArray:(NSArray *)[dict objectForKey:@"hidden"]];	
@@ -231,6 +235,12 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 	}
 	[dict release];
 	[self setNavigationTitle:[self navigationTitle]];
+}
+
+- (void)buttonTapped:(UIButton *)button
+{
+	button.selected = !button.selected;
+	[_tableView setEditing:button.selected animated:YES];
 }
 
 - (void) dealloc {
@@ -294,16 +304,44 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 }
 
 - (int) numberOfSectionsInTableView:(UITableView *)tableView {
-	if (_use == 4)
-		return 5;
-	else
-		return 2;
+	switch (_use) {
+		case 0:
+			return 3;
+			break;
+		case 1:
+			return 2;
+			break;
+		case 3:
+			return 2;
+			break;
+		case 4:
+			return 4;
+			break;
+		default:
+			return 0;
+			break;
+	}
 }
 
 - (id) tableView:(UITableView *)tableView titleForHeaderInSection:(int)section
 {
 	switch (_use) {
 		case 0:
+			switch (section) {
+				case 0:
+					return @"Reorder";
+					break;
+				case 1:
+					return @"System";
+					break;
+				case 2:
+					return @"App Store";
+					break;
+				default:
+					return nil;
+					break;
+			}
+			break;
 		case 1:
 			switch (section) {
 				case 0:
@@ -341,9 +379,6 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 				case 3:
 					return @"Reverse Cycling Gesture";
 					break;
-				case 4:
-					return @"Random Cycling Gesture";
-					break;
 				default:
 					return nil;
 					break;
@@ -358,6 +393,21 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 {
 	switch (_use) {
 		case 0:
+			switch (section) {
+				case 0:
+					return [applicationsHere count];
+					break;
+				case 1:
+					return [systemApps count];
+					break;
+				case 2:
+					return [appStoreApps count];
+					break;
+				default:
+					return 0;
+					break;
+			}
+			break;
 		case 1:
 			switch (section) {
 				case 0:
@@ -415,24 +465,56 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
     }
 	NSString *identifier;
+	NSString *displayName;
+	UIImage *icon = nil;
+	NSString *iconPath;
 	switch (_use) {
 		case 0:
+			switch (indexPath.section) {
+				case 0:
+					identifier = [applicationsHere objectAtIndex:indexPath.row];
+					break;
+				case 1:
+					identifier = [systemApps objectAtIndex:indexPath.row];
+					cell.accessoryType = [applicationsHere containsObject:identifier] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+					break;
+				case 2:
+					identifier = [appStoreApps objectAtIndex:indexPath.row];
+					cell.accessoryType = [applicationsHere containsObject:identifier] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+					break;
+				default:
+					identifier = nil;
+					break;
+			}
+			displayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(identifier);
+			[cell textLabel].text = displayName;
+			[displayName release];
+			
+			iconPath = SBSCopyIconImagePathForDisplayIdentifier(identifier);
+			if (iconPath != nil) {
+				icon = [UIImage imageWithContentsOfFile:iconPath];
+				[iconPath release];
+			}
+			
+			[cell imageView].image = icon;
+			break;
 		case 1:
 			switch (indexPath.section) {
 				case 0:
 					identifier = [systemApps objectAtIndex:indexPath.row];
 					break;
-				default:
 				case 1:
 					identifier = [appStoreApps objectAtIndex:indexPath.row];
 					break;
+				default:
+					identifier = nil;
+					break;
 			}
-			NSString *displayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(identifier);
+			displayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(identifier);
 			[cell textLabel].text = displayName;
 			[displayName release];
 			
-			UIImage *icon = nil;
-			NSString *iconPath = SBSCopyIconImagePathForDisplayIdentifier(identifier);
+			iconPath = SBSCopyIconImagePathForDisplayIdentifier(identifier);
 			if (iconPath != nil) {
 				icon = [UIImage imageWithContentsOfFile:iconPath];
 				[iconPath release];
@@ -443,6 +525,7 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 			cell.accessoryType = [applicationsHere containsObject:identifier] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
 			break;
 		case 3:
+			identifier = nil;
 			switch (indexPath.section) {
 				case 0:
 					if isWildcat {
@@ -514,6 +597,7 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 			}
 			break;
 		case 4:
+			identifier = nil;
 			switch (indexPath.row) {
 				case 0:
 					cell.textLabel.text = @"Slide Down";
@@ -530,14 +614,79 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 				default:
 					break;
 			}
-			if ((indexPath.section == 0 && (int)indexPath.row == _backgroundIt) || (indexPath.section == 1 && (int)indexPath.row == _quitIt) || (indexPath.section == 2 && (int)indexPath.row == _cycleIt) || (indexPath.section == 3 && (int)indexPath.row == _reverseIt) || (indexPath.section == 1 && (int)indexPath.row == _randomIt))
-				cell.accessoryType = UITableViewCellAccessoryCheckmark;
+			switch (indexPath.section) {
+				case 0:
+					if (indexPath.row == _backgroundIt)
+						[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+					else
+						[cell setAccessoryType:UITableViewCellAccessoryNone];
+					break;
+				case 1:
+					if (indexPath.row == _quitIt)
+						[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+					else
+						[cell setAccessoryType:UITableViewCellAccessoryNone];
+					break;
+				case 2:
+					if (indexPath.row == _cycleIt)
+						[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+					else
+						[cell setAccessoryType:UITableViewCellAccessoryNone];
+					break;
+				case 3:
+					if (indexPath.row == _reverseIt)
+						[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+					else
+						[cell setAccessoryType:UITableViewCellAccessoryNone];
+					break;
+				default:
+					[cell setAccessoryType:UITableViewCellAccessoryNone];
+					break;
+			}
 			break;
 		default:
+			identifier = nil;
 			break;
 	}
 	return cell;
 }
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return (indexPath.section == 0 && _use == 0);
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return (indexPath.section == 0 && _use == 0);
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+	NSString *ident = [[NSString alloc] initWithString:[applicationsHere objectAtIndex:fromIndexPath.row]];
+	[applicationsHere removeObject:ident];
+	[applicationsHere insertObject:ident atIndex:toIndexPath.row];
+	NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
+	[prefs setObject:applicationsHere forKey:@"favorites"];
+	[prefs writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
+	CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.zimm.circuitous.settingschanged"), NULL, NULL, true);
+	[prefs release];
+	[ident release];
+}
+	
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if (editingStyle == UITableViewCellEditingStyleDelete) {
+		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil] withRowAnimation:UITableViewRowAnimationTop];
+		[applicationsHere removeObjectAtIndex:indexPath.row];
+		NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
+		[prefs setObject:applicationsHere forKey:@"favorites"];
+		[prefs writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
+		CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.zimm.circuitous.settingschanged"), NULL, NULL, true);
+		[prefs release];
+	}
+}
+
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -546,14 +695,51 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 	NSString *identifier;
 	switch (_use) {
 		case 0:
+			switch (indexPath.section) {
+				case 0:
+					[dict release];
+					[tableView deselectRowAtIndexPath:indexPath animated:YES];
+					return;
+					break;
+				case 1:
+					identifier = [systemApps objectAtIndex:indexPath.row];
+					break;
+				case 2:
+					identifier = [appStoreApps objectAtIndex:indexPath.row];
+					break;
+				default:
+					identifier = nil;
+					break;
+			}
+			if (cell.accessoryType == UITableViewCellAccessoryNone) {
+				[applicationsHere addObject:identifier];
+				[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:([applicationsHere count] - 1) inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+				cell.accessoryType = UITableViewCellAccessoryCheckmark;
+			} else {
+				int i = -1;
+				int where = 0;
+				for (NSString *app in applicationsHere) {
+					i++;
+					if ([app isEqualToString:identifier]) {
+						where = i;
+					}
+				}
+				[applicationsHere removeObject:identifier];
+				[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:where inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+				cell.accessoryType = UITableViewCellAccessoryNone;
+			}
+			[dict setObject:applicationsHere forKey:@"favorites"];
+			break;
 		case 1:
 			switch (indexPath.section) {
 				case 0:
 					identifier = [systemApps objectAtIndex:indexPath.row];
 					break;
-				default:
 				case 1:
 					identifier = [appStoreApps objectAtIndex:indexPath.row];
+					break;
+				default:
+					identifier = nil;
 					break;
 			}
 			if (cell.accessoryType == UITableViewCellAccessoryNone) {
@@ -563,12 +749,10 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 				[applicationsHere removeObject:identifier];
 				cell.accessoryType = UITableViewCellAccessoryNone;
 			}
-			if (_use == 0)
-				[dict setObject:applicationsHere forKey:@"favorites"];
-			else
-				[dict setObject:applicationsHere forKey:@"hidden"];
+			[dict setObject:applicationsHere forKey:@"hidden"];
 			break;
 		case 3:
+			identifier = nil;
 			switch (indexPath.section) {
 				case 1:
 					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
@@ -628,7 +812,7 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 									_favs = YES;
 								if (_favs) {
 									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
-								} else if (_wide) {
+								} else {
 									[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
 								}
 								[dict setObject:[NSNumber numberWithBool:_favs] forKey:@"favs"];
@@ -650,6 +834,7 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 			}
 			break;
 		case 4:
+			identifier = nil;
 			[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:indexPath.section]] setAccessoryType:UITableViewCellAccessoryNone];
 			[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:indexPath.section]] setAccessoryType:UITableViewCellAccessoryNone];
 			[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:indexPath.section]] setAccessoryType:UITableViewCellAccessoryNone];
@@ -694,18 +879,6 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 						[alert release];
 						_reverseIt = 5;
 						[dict setObject:[NSNumber numberWithInt:_reverseIt] forKey:@"reverse"];
-					} else if (_backgroundIt == _randomIt) {
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
-						[alert setBodyText:@"You cannot have the backgrounding and the random cycling gestures be the same. Please select another gesture for random cycling."];
-						[alert setNumberOfRows:1];
-						[alert popupAlertAnimated:YES];
-						[alert release];
-						_randomIt = 5;
-						[dict setObject:[NSNumber numberWithInt:_randomIt] forKey:@"random"];
 					}
 					[dict setObject:[NSNumber numberWithInt:_backgroundIt] forKey:@"background"];
 					break;
@@ -747,18 +920,6 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 						[alert release];
 						_reverseIt = 5;
 						[dict setObject:[NSNumber numberWithInt:_reverseIt] forKey:@"reverse"];
-					} else if (_quitIt == _randomIt) {
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
-						[alert setBodyText:@"You cannot have the quitting and random cycling gestures be the same. Please select another gesture for random cycling."];
-						[alert setNumberOfRows:1];
-						[alert popupAlertAnimated:YES];
-						[alert release];
-						_randomIt = 5;
-						[dict setObject:[NSNumber numberWithInt:_randomIt] forKey:@"random"];
 					}
 					[dict setObject:[NSNumber numberWithInt:_quitIt] forKey:@"quit"];
 					break;
@@ -800,18 +961,6 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 						[alert release];
 						_reverseIt = 5;
 						[dict setObject:[NSNumber numberWithInt:_reverseIt] forKey:@"reverse"];
-					} else if (_cycleIt == _randomIt) {
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
-						[alert setBodyText:@"You cannot have the cycling and random cycling gestures be the same. Please select another gesture for random cycling."];
-						[alert setNumberOfRows:1];
-						[alert popupAlertAnimated:YES];
-						[alert release];
-						_randomIt = 5;
-						[dict setObject:[NSNumber numberWithInt:_randomIt] forKey:@"random"];
 					}
 					[dict setObject:[NSNumber numberWithInt:_cycleIt] forKey:@"cycle"];
 					break;
@@ -853,79 +1002,15 @@ static NSInteger compareDisplayNames(NSString *a, NSString *b, void *context)
 						[alert release];
 						_cycleIt = 5;
 						[dict setObject:[NSNumber numberWithInt:_cycleIt] forKey:@"cycle"];
-					} else if (_reverseIt == _randomIt) {
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:4]] setAccessoryType:UITableViewCellAccessoryNone];
-						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
-						[alert setBodyText:@"You cannot have the reverse cycling and random cycling gestures be the same. Please select another gesture for random cycling."];
-						[alert setNumberOfRows:1];
-						[alert popupAlertAnimated:YES];
-						[alert release];
-						_randomIt = 5;
-						[dict setObject:[NSNumber numberWithInt:_randomIt] forKey:@"random"];
 					}
 					[dict setObject:[NSNumber numberWithInt:_reverseIt] forKey:@"reverse"];
-					break;
-				case 4:
-					_randomIt = indexPath.row;
-					if (_randomIt == _backgroundIt) {
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
-						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
-						[alert setBodyText:@"You cannot have the random cycling and backgrounding gestures be the same. Please select another gesture for backgrounding."];
-						[alert setNumberOfRows:1];
-						[alert popupAlertAnimated:YES];
-						[alert release];
-						_backgroundIt = 5;
-						[dict setObject:[NSNumber numberWithInt:_backgroundIt] forKey:@"background"];
-					} else if (_randomIt == _quitIt) {
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
-						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
-						[alert setBodyText:@"You cannot have the random cycling and the cycling gestures be the same. Please select another gesture for cycling."];
-						[alert setNumberOfRows:1];
-						[alert popupAlertAnimated:YES];
-						[alert release];
-						_quitIt = 5;
-						[dict setObject:[NSNumber numberWithInt:_quitIt] forKey:@"quit"];
-					} else if (_randomIt == _cycleIt) {
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
-						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
-						[alert setBodyText:@"You cannot have the random cycling and the cycling gestures be the same. Please select another gesture for cycling."];
-						[alert setNumberOfRows:1];
-						[alert popupAlertAnimated:YES];
-						[alert release];
-						_cycleIt = 5;
-						[dict setObject:[NSNumber numberWithInt:_cycleIt] forKey:@"cycle"];
-					} else if (_randomIt == _reverseIt) {
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
-						[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:3]] setAccessoryType:UITableViewCellAccessoryNone];
-						UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Error" buttons:[NSArray arrayWithObjects:@"Okay", nil] defaultButtonIndex:0 delegate:nil context:NULL];
-						[alert setBodyText:@"You cannot have the random cycling and reverse cycling gestures be the same. Please select another gesture for reverse cycling."];
-						[alert setNumberOfRows:1];
-						[alert popupAlertAnimated:YES];
-						[alert release];
-						_reverseIt = 5;
-						[dict setObject:[NSNumber numberWithInt:_reverseIt] forKey:@"reverse"];
-					}
-					[dict setObject:[NSNumber numberWithInt:_randomIt] forKey:@"random"];
 					break;
 				default:
 					break;
 			}
 			break;
 		default:
+			identifier = nil;
 			break;
 	}
 	[dict writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
