@@ -13,7 +13,9 @@
 
 @property (nonatomic, readonly) SBApplication *activeApp;
 @property (nonatomic, readonly) NSSet *activeApplications;
+@property (nonatomic, readonly) NSArray *activeApps;
 @property (nonatomic, readonly) NSSet *backgroundedApplications;
+@property (nonatomic, readonly) NSArray *backgroundedApps;
 
 - (void)activateAppWithDisplayIdentifier:(NSString *)identifier animated:(BOOL)animated;
 - (void)activateApplication:(SBApplication *)app animated:(BOOL)animated;
