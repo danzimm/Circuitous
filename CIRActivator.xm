@@ -12,13 +12,16 @@
 #import "UIModalView.h"
 #import "DSDisplayController.h"
 
+#include <stdlib.h>
+
 static CIRLauncherHandler *sharedLauncher = nil;
 static BOOL _becomeHomeScreen = NO;
 static BOOL _onLock = YES;
 static BOOL _hasIcon = YES;
 static BOOL _uninstalled = NO;
 static int _orientation = 0;
-//static int _currentApp = 0;
+static int _currentApp = 0;
+static BOOL _animations = YES;
 
 %class SBAwayController;
 %class SBIconModel;
@@ -29,6 +32,7 @@ static void UpdatePreferences() {
 	NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
 	_becomeHomeScreen = [prefs objectForKey:@"becomehome"] ? [[prefs objectForKey:@"becomehome"] boolValue] : NO;
 	_onLock = [prefs objectForKey:@"onlock"] ? [[prefs objectForKey:@"onlock"] boolValue] : YES;
+	_animations = [prefs objectForKey:@"appanimations"] ? [[prefs objectForKey:@"appanimations"] boolValue] : YES;
 	BOOL icon = [prefs objectForKey:@"icon"] ? [[prefs objectForKey:@"icon"] boolValue] : YES;
 	if (icon != _hasIcon) {
 		_hasIcon = icon;
@@ -46,6 +50,7 @@ static void UpdatePreferences() {
 @interface SpringBoard (PadLauncher)
 - (void)showCircuitous;
 - (void)hideCircuitous;
+- (void)cycleAppsWithPlace:(int)place;
 @end
 
 @interface UIDevice (iPad)
@@ -81,6 +86,70 @@ static void UpdatePreferences() {
 
 @end
 
+@implementation CIRActivatorCycler
+- (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
+{
+	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled)
+		return;
+	[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
+	[event setHandled:YES];
+}
+
+- (void)activator:(LAActivator *)activator abortEvent:(LAEvent *)event
+{
+}
+
++ (void)load
+{
+	[[LAActivator sharedInstance] registerListener:[self new] forName:@"com.zimm.circuitous.cycler.activator"];
+}
+
+@end
+
+@implementation CIRActivatorReverseCycler
+- (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
+{
+	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled)
+		return;
+	[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
+	[event setHandled:YES];
+}
+
+- (void)activator:(LAActivator *)activator abortEvent:(LAEvent *)event
+{
+}
+
++ (void)load
+{
+	[[LAActivator sharedInstance] registerListener:[self new] forName:@"com.zimm.circuitous.reverse.activator"];
+}
+
+@end
+
+@implementation CIRActivatorRandom
+- (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
+{
+	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled)
+		return;
+	int rand = (arc4random() % 10) + 1;
+	if (rand > 5) {
+		rand = -(rand - 5);
+	}
+	[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:rand];
+	[event setHandled:YES];
+}
+
+- (void)activator:(LAActivator *)activator abortEvent:(LAEvent *)event
+{
+}
+
++ (void)load
+{
+	[[LAActivator sharedInstance] registerListener:[self new] forName:@"com.zimm.circuitous.random.activator"];
+}
+
+@end
+
 %hook SpringBoard
 
 - (void)applicationDidFinishLaunching:(id)application
@@ -89,6 +158,7 @@ static void UpdatePreferences() {
 	_becomeHomeScreen = [prefs objectForKey:@"becomehome"] ? [[prefs objectForKey:@"becomehome"] boolValue] : NO;
 	_onLock = [prefs objectForKey:@"onlock"] ? [[prefs objectForKey:@"onlock"] boolValue] : YES;
 	_hasIcon = [prefs objectForKey:@"icon"] ? [[prefs objectForKey:@"icon"] boolValue] : YES;
+	_animations = [prefs objectForKey:@"appanimations"] ? [[prefs objectForKey:@"appanimations"] boolValue] : YES;
 	[prefs release];
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (void (*)(CFNotificationCenterRef, void *, CFStringRef, const void *, CFDictionaryRef))UpdatePreferences, CFSTR("com.zimm.circuitous.settingschanged"), NULL, CFNotificationSuspensionBehaviorHold);
 	%orig;
@@ -176,6 +246,23 @@ static void UpdatePreferences() {
 	}
 }
 
+%new(v@:i)
+- (void)cycleAppsWithPlace:(int)place
+{
+	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
+	_currentApp = _currentApp + place;
+	if (_currentApp < -1) {
+		_currentApp = [apps count] - 1;
+	} else if (_currentApp >= (int)[apps count]) {
+		_currentApp = -1;
+	}
+	if (_currentApp == -1) {
+		[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:@"com.apple.springboard" animated:_animations];
+	} else {
+		[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:[apps objectAtIndex:_currentApp] animated:_animations];
+	}
+}	
+
 %end
 
 %hook SBApplication
@@ -184,6 +271,13 @@ static void UpdatePreferences() {
 - (void)launchSucceeded:(BOOL)unknownFlag
 {
 	%orig;
+	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
+	int i = -1;
+	for (NSString *app in apps) {
+		i++;
+		if ([app isEqualToString:[self displayIdentifier]])
+			_currentApp = i;
+	}
 	if (sharedLauncher) {
 		[sharedLauncher relayout];
 	}
@@ -192,6 +286,13 @@ static void UpdatePreferences() {
 - (void)exitedAbnormally
 {
 	%orig;
+	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
+	int i = -1;
+	for (NSString *app in apps) {
+		i++;
+		if ([app isEqualToString:[self displayIdentifier]])
+			_currentApp = i;
+	}
 	if (sharedLauncher) {
 		[sharedLauncher relayout];
 	}
@@ -200,6 +301,13 @@ static void UpdatePreferences() {
 - (void)exitedCommon
 {
     %orig;
+	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
+	int i = -1;
+	for (NSString *app in apps) {
+		i++;
+		if ([app isEqualToString:[self displayIdentifier]])
+			_currentApp = i;
+	}
 	if (sharedLauncher) {
 		[sharedLauncher relayout];
 	}
@@ -275,10 +383,10 @@ static void UpdatePreferences() {
 {
 	%orig;
 	NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"]?:[[NSMutableDictionary alloc] init];
-	if (![prefs objectForKey:@"1.6.1"]) {
-		[prefs setObject:@"OK" forKey:@"1.6.1"];
+	if (![prefs objectForKey:@"1.6.2beta"]) {
+		[prefs setObject:@"OK" forKey:@"1.6.2beta"];
 		[prefs writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
-		UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Welcome to Circuitous 1.6.1" buttons:[NSArray arrayWithObjects:@"Settings", @"Later", nil] defaultButtonIndex:0 delegate:self context:NULL];
+		UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Welcome to Circuitous 1.6.2beta" buttons:[NSArray arrayWithObjects:@"Settings", @"Later", nil] defaultButtonIndex:0 delegate:self context:NULL];
 		[alert setBodyText:@"You should go configure your settings in the settings app before continuing. Remember to read the tutorial at the bottom! I actually suggest doing this first!"];
 		[alert setNumberOfRows:1];
 		[alert popupAlertAnimated:YES];
@@ -292,7 +400,7 @@ static void UpdatePreferences() {
 {
 	switch (buttonIndex) {
 		case 0:
-			[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:@"com.apple.Preferences" animated:YES];
+			[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:@"com.apple.Preferences" animated:_animations];
 			break;
 		default:
 			break;

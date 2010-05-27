@@ -20,5 +20,5 @@
 - (id)initWithIdentifier:(NSString *)ident andXCoor:(int)coor animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge;
 - (void)setActive;
 - (NSString *)identifier;
-
+- (void)setActiveWithoutBox;
 @end

@@ -39,6 +39,8 @@ static NSSet *_activeApps = nil;
 		icon.tag = place++;
 		if ([_activeApps containsObject:app] && closeBox)
 			[icon setActive];
+		else if ([_activeApps containsObject:app])
+			[icon setActiveWithoutBox];
 		[self addSubview:icon];
 	}
 	[prefs release];

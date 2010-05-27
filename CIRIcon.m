@@ -100,6 +100,11 @@
 	[self addSubview:_iconClose];
 }
 
+- (void)setActiveWithoutBox
+{
+	_iconClose = [[CIRCloseView alloc] initWithIdentifier:_identifier animations:_animate];
+}
+
 - (NSString *)identifier
 {
 	return _identifier;

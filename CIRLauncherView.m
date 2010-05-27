@@ -103,23 +103,24 @@ static int getFreeMemory() {
 	id orig;
 	if isWildcat {
 		if (!_wide && _favs) {
-			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background.png"]];
+			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
 			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,250.0f)];
 		} else if (!_wide && !_favs) {
-			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background.png"]];
+			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
 			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,125.0f)];
 		} else if (!_dbl || !_favs) {
-			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-wide.png"]];
+			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
 			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,125.0f)];
 		} else {
-			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-wide.png"]];
+			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide.png"]];
 			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,250.0f)];
 		}
 	} else {
-		_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background.png"]];
 		if (_favs) {
+			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
 			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,175.0f)];
 		} else {
+			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone-slim.png"]];
 			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,90.0f)];
 		}
 	}

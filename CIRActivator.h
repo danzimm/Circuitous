@@ -14,3 +14,18 @@
 }
 
 @end
+@interface CIRActivatorCycler : NSObject<LAListener> {
+@private
+}
+
+@end
+@interface CIRActivatorReverseCycler : NSObject<LAListener> {
+@private
+}
+
+@end
+@interface CIRActivatorRandom : NSObject<LAListener> {
+@private
+}
+
+@end
