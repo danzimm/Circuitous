@@ -67,6 +67,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 	int _reverseIt;
 	int _randomIt;
 	CGSize sizeIs;
+	int _place;
 }
 - (id) view;
 - (NSString *) navigationTitle;
@@ -215,6 +216,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 			_wide = [dict objectForKey:@"wide"] ? [[dict objectForKey:@"wide"] boolValue] : NO;
 			_double = [dict objectForKey:@"dbl"] ? [[dict objectForKey:@"dbl"] boolValue] : YES;
 			_transition = [dict objectForKey:@"trans"] ? [[dict objectForKey:@"trans"] intValue] : 0;
+			_place = [dict objectForKey:@"place"] ? [[dict objectForKey:@"place"] intValue] : 0;
 			break;
 		case 4:
 			_quitIt = [dict objectForKey:@"quit"] ? [[dict objectForKey:@"quit"] intValue] : 1;
@@ -312,7 +314,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 			return 2;
 			break;
 		case 3:
-			return 2;
+			return 3;
 			break;
 		case 4:
 			return 4;
@@ -360,6 +362,8 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 				case 1:
 					return @"Transition";
 					break;
+				case 2:
+					return @"Place";
 				default:
 					return nil;
 					break;
@@ -438,6 +442,9 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 					break;
 				case 1:
 					return 3;
+					break;
+				case 2:
+					return 4;
 					break;
 				default:
 					return 0;
@@ -590,6 +597,26 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 							break;
 					}
 					if ((int)indexPath.row == _transition)
+						cell.accessoryType = UITableViewCellAccessoryCheckmark;
+					break;
+				case 2:
+					switch (indexPath.row) {
+						case 0:
+							cell.textLabel.text = @"Top";
+							break;
+						case 1:
+							cell.textLabel.text = @"Bottom";
+							break;
+						case 2:
+							cell.textLabel.text = @"Left";
+							break;
+						case 3:
+							cell.textLabel.text = @"Right";
+							break;
+						default:
+							break;
+					}
+					if ((int)indexPath.row == _place)
 						cell.accessoryType = UITableViewCellAccessoryCheckmark;
 					break;
 				default:
@@ -828,6 +855,15 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 								break;
 						}
 					}
+					break;
+				case 2:
+					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
+					[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+					_place = indexPath.row;
+					[dict setObject:[NSNumber numberWithInt:_place] forKey:@"place"];
 					break;
 				default:
 					break;

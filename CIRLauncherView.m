@@ -13,6 +13,7 @@ static BOOL _wide = NO;
 static BOOL _favs = YES;
 static int _orientation = 1;
 static BOOL _dbl = NO;
+static int _place = 0;
 
 static int GetBytesToMalloc();
 
@@ -80,6 +81,7 @@ static int getFreeMemory() {
 	_favs = [prefs objectForKey:@"favs"] ? [[prefs objectForKey:@"favs"] boolValue] : YES;
 	_wide = [prefs objectForKey:@"wide"] ? [[prefs objectForKey:@"wide"] boolValue] : NO;
 	_dbl = [prefs objectForKey:@"dbl"] ? [[prefs objectForKey:@"dbl"] boolValue] : YES;
+	_place = [prefs objectForKey:@"place"] ? [[prefs objectForKey:@"place"] intValue] : 0;
 	if isWildcat
 		_orientation = [(SpringBoard *)[UIApplication sharedApplication] activeInterfaceOrientation];
 	else {
@@ -101,28 +103,128 @@ static int getFreeMemory() {
 		}
 	}
 	id orig;
-	if isWildcat {
-		if (!_wide && _favs) {
-			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
-			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,250.0f)];
-		} else if (!_wide && !_favs) {
-			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
-			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,125.0f)];
-		} else if (!_dbl || !_favs) {
-			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
-			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,125.0f)];
-		} else {
-			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide.png"]];
-			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,250.0f)];
-		}
-	} else {
-		if (_favs && _dbl) {
-			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
-			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,175.0f)];
-		} else {
-			_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone-slim.png"]];
-			orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,90.0f)];
-		}
+	switch (_place) {
+		case 0:
+			if isWildcat {
+				if (!_wide && _favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,250.0f)];
+				} else if (!_wide && !_favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,125.0f)];
+				} else if (!_dbl || !_favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,125.0f)];
+				} else {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide.png"]];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,250.0f)];
+				}
+			} else {
+				if (_favs && _dbl) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,175.0f)];
+				} else {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone-slim.png"]];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,90.0f)];
+				}
+			}
+			break;
+		case 1:
+			if isWildcat {
+				if (!_wide && _favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,250.0f)];
+				} else if (!_wide && !_favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,125.0f)];
+				} else if (!_dbl || !_favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,125.0f)];
+				} else {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,250.0f)];
+				}
+			} else {
+				if (_favs && _dbl) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,175.0f)];
+				} else {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone-slim.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,90.0f)];
+				}
+			}
+			break;
+		case 2:
+			if isWildcat {
+				if (!_wide && _favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,400.0f)];
+				} else if (!_wide && !_favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,400.0f)];
+				} else if (!_dbl || !_favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,768.0f)];
+				} else {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,768.0f)];
+				}
+			} else {
+				if (_favs && _dbl) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,175.0f,320.0f)];
+				} else {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone-slim.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,90.0f,320.0f)];
+				}
+			}
+			break;
+		case 3:
+			if isWildcat {
+				if (!_wide && _favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,400.0f)];
+				} else if (!_wide && !_favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,400.0f)];
+				} else if (!_dbl || !_favs) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,768.0f)];
+				} else {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,768.0f)];
+				}
+			} else {
+				if (_favs && _dbl) {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,175.0f,320.0f)];
+				} else {
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone-slim.png"]];
+					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
+					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,90.0f,320.0f)];
+				}
+			}
+			break;
+		default:
+			orig = [super init];
+			break;
 	}
 	mainRect = self.frame;
 	self.windowLevel = 300;
@@ -161,53 +263,152 @@ static int getFreeMemory() {
 		[self addSubview:_fm];
 	}
 	[prefs release];
-	if isWildcat {
-		if (!_wide)
-			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,380.0f,115.0f) apps:apps active:YES];
-		else if (!_favs || (_dbl && _favs))
-			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f,115.0f) apps:apps active:YES];
-		else
-			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
+	if (_place == 0 || _place == 1) {
+		if isWildcat {
+			if (!_wide)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,380.0f,115.0f) apps:apps active:YES];
+			else if (!_favs || (_dbl && _favs))
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f,115.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
+		} else {
+			if (_favs && !_dbl)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,155.0f,80.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
+		}
 	} else {
-		if (_favs && !_dbl)
-			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,155.0f,80.0f) apps:apps active:YES];
-		else
-			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
+		if isWildcat {
+			if (!_wide)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,380.0f) apps:apps active:YES];
+			else if (!_favs || (_dbl && _favs))
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f/2 - 5.0f) apps:apps active:YES];
+		} else {
+			if (_favs && !_dbl)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,155.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,310.0f) apps:apps active:YES];
+		}
 	}
 	[self addSubview:_activeAppsScrollView];
 	if (_favs) {
-		if isWildcat {
-			if (!_wide)
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f, 130.0f, 380.0f, 115.0f) apps:apps2 active:NO];
-			else if (_dbl)
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,130.0f,748.0f,115.0f) apps:apps2 active:NO];
-			else
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(748.0f/2 + 5.0f, 5.0f, 748.0f/2 - 5.0f, 115.0f) apps:apps2 active:NO];
-
+		if (_place == 0 || _place == 1) {
+			if isWildcat {
+				if (!_wide)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f, 130.0f, 380.0f, 115.0f) apps:apps2 active:NO];
+				else if (_dbl)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,130.0f,748.0f,115.0f) apps:apps2 active:NO];
+				else
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(748.0f/2 + 5.0f, 5.0f, 748.0f/2 - 5.0f, 115.0f) apps:apps2 active:NO];
+				
+			} else {
+				if (!_dbl)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(155.0f, 5.0f, 155.0f, 80.0f) apps:apps2 active:NO];
+				else
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f, 90.0f, 310.0f, 80.0f) apps:apps2 active:NO];
+			}
 		} else {
-			if (!_dbl)
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(155.0f, 5.0f, 155.0f, 80.0f) apps:apps2 active:NO];
-			else
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f, 90.0f, 310.0f, 80.0f) apps:apps2 active:NO];
+			if isWildcat {
+				if (!_wide)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(130.0f, 10.0f, 115.0f, 380.0f) apps:apps2 active:NO];
+				else if (_dbl)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(130.0f,10.0f,115.0f,748.0f) apps:apps2 active:NO];
+				else
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f, 748.0f/2 + 5.0f, 115.0f,748.0f/2 - 5.0f) apps:apps2 active:NO];
+				
+			} else {
+				if (!_dbl)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f, 155.0f, 80.0f, 155.0f) apps:apps2 active:NO];
+				else
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(90.0f, 5.0f, 80.0f, 310.0f) apps:apps2 active:NO];
+			}
 		}
 		[self addSubview:_favoriteAppsScrollView];
 	}
-	switch (_orientation) {
-		case 2:
-			[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
-			[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - 20.0f - mainRect.size.height, mainRect.size.width, mainRect.size.height)];
-			break;
-		case 3:
-			[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
-			[self setFrame:CGRectMake((CGRectGetMaxX([[UIScreen mainScreen] bounds]) - 20.0f) - mainRect.size.height, 0.0f, mainRect.size.height, mainRect.size.width)];
-			break;
-		case 4:
-			[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
-			[self setFrame:CGRectMake(20.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+	switch (_place) {
+		case 0:
+			switch (_orientation) {
+				case 2:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - 20.0f - mainRect.size.height, mainRect.size.width, mainRect.size.height)];
+					break;
+				case 3:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
+					[self setFrame:CGRectMake((CGRectGetMaxX([[UIScreen mainScreen] bounds]) - 20.0f) - mainRect.size.height, 0.0f, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 4:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
+					[self setFrame:CGRectMake(20.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 1:
+				default:
+					[self setFrame:CGRectMake(0.0f, 20.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+			}
 			break;
 		case 1:
+			switch (_orientation) {
+				case 2:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, 0.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+				case 3:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
+					[self setFrame:CGRectMake(0.0f, 0.0f, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 4:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.height, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 1:
+				default:
+					[self setFrame:CGRectMake(0.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.height, mainRect.size.width, mainRect.size.height)];
+					break;
+			}
+			break;
+		case 2:
+			switch (_orientation) {
+				case 2:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+				case 3:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, 0.0f, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 4:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
+					[self setFrame:CGRectMake(20.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 1:
+				default:
+					[self setFrame:CGRectMake(0.0f, 20.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+			}
+			break;
+		case 3:
+			switch (_orientation) {
+				case 2:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
+					[self setFrame:CGRectMake(0.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+				case 3:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 4:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
+					[self setFrame:CGRectMake(20.0f, 0.0f, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 1:
+				default:
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, 20.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+			}
+			break;
 		default:
-			[self setFrame:CGRectMake(0.0f, 20.0f, mainRect.size.width, mainRect.size.height)];
 			break;
 	}
 	return orig;
@@ -297,22 +498,91 @@ static int getFreeMemory() {
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.32f];
 	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-	switch (_orientation) {
-		case 2:
-			[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
-			[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - 20.0f - mainRect.size.height, mainRect.size.width, mainRect.size.height)];
-			break;
-		case 3:
-			[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
-			[self setFrame:CGRectMake((CGRectGetMaxX([[UIScreen mainScreen] bounds]) - 20.0f) - mainRect.size.height, 0.0f, mainRect.size.height, mainRect.size.width)];
-			break;
-		case 4:
-			[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
-			[self setFrame:CGRectMake(20.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+	switch (_place) {
+		case 0:
+			switch (_orientation) {
+				case 2:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - 20.0f - mainRect.size.height, mainRect.size.width, mainRect.size.height)];
+					break;
+				case 3:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
+					[self setFrame:CGRectMake((CGRectGetMaxX([[UIScreen mainScreen] bounds]) - 20.0f) - mainRect.size.height, 0.0f, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 4:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
+					[self setFrame:CGRectMake(20.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 1:
+				default:
+					[self setTransform:CGAffineTransformMakeRotation(0.0f)];
+					[self setFrame:CGRectMake(0.0f, 20.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+			}
 			break;
 		case 1:
-			[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 0)];
-			[self setFrame:CGRectMake(0.0f, 20.0f, mainRect.size.width, mainRect.size.height)];
+			switch (_orientation) {
+				case 2:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, 0.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+				case 3:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
+					[self setFrame:CGRectMake(0.0f, 0.0f, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 4:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.height, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 1:
+				default:
+					[self setTransform:CGAffineTransformMakeRotation(0.0f)];
+					[self setFrame:CGRectMake(0.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.height, mainRect.size.width, mainRect.size.height)];
+					break;
+			}
+			break;
+		case 2:
+			switch (_orientation) {
+				case 2:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+				case 3:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, 0.0f, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 4:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
+					[self setFrame:CGRectMake(20.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 1:
+				default:
+					[self setTransform:CGAffineTransformMakeRotation(0.0f)];
+					[self setFrame:CGRectMake(0.0f, 20.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+			}
+			break;
+		case 3:
+			switch (_orientation) {
+				case 2:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
+					[self setFrame:CGRectMake(0.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+				case 3:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 4:
+					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
+					[self setFrame:CGRectMake(20.0f, 0.0f, mainRect.size.height, mainRect.size.width)];
+					break;
+				case 1:
+				default:
+					[self setTransform:CGAffineTransformMakeRotation(0.0f)];
+					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, 20.0f, mainRect.size.width, mainRect.size.height)];
+					break;
+			}
+			break;
 		default:
 			break;
 	}
