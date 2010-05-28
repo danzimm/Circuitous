@@ -85,7 +85,7 @@ static BOOL horiz = NO;
 		}
 		if (((int)[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] badgeValue] != 0) && badge) {
 			_badge = [[objc_getClass("SBIconBadge") alloc] initWithBadge:[NSString stringWithFormat:@"%d", [(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] badgeValue]]];
-			_badge.center = CGPointMake(_iconImage.frame.size.width,6.0f);
+			_badge.center = CGPointMake(_iconImage.frame.size.width,7.5f);
 			[self addSubview:_badge];
 		} else
 			_badge = nil;

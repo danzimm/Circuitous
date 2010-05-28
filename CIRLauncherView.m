@@ -441,16 +441,36 @@ static int getFreeMemory() {
 		[_favoriteAppsScrollView removeFromSuperview];
 		[_favoriteAppsScrollView release];
 		_favoriteAppsScrollView = nil;
-		if isWildcat {
-			if (!_wide)
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f, 130.0f, 380.0f, 115.0f) apps:tmp1 active:NO];
-			else if (_dbl)
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,130.0f,748.0f,115.0f) apps:tmp1 active:NO];
-			else
-				_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(748.0f/2 + 5.0f, 5.0f, 748.0f/2 - 5.0f, 115.0f) apps:tmp1 active:NO];
-			
+		if (_place == 0 || _place == 1) {
+			if isWildcat {
+				if (!_wide)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f, 130.0f, 380.0f, 115.0f) apps:tmp1 active:NO];
+				else if (_dbl)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,130.0f,748.0f,115.0f) apps:tmp1 active:NO];
+				else
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(748.0f/2 + 5.0f, 5.0f, 748.0f/2 - 5.0f, 115.0f) apps:tmp1 active:NO];
+				
+			} else {
+				if (!_dbl)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(155.0f, 5.0f, 155.0f, 80.0f) apps:tmp1 active:NO];
+				else
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f, 90.0f, 310.0f, 80.0f) apps:tmp1 active:NO];
+			}
 		} else {
-			_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f, 90.0f, 310.0f, 80.0f) apps:tmp1 active:NO];
+			if isWildcat {
+				if (!_wide)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(130.0f, 10.0f, 115.0f, 380.0f) apps:tmp1 active:NO];
+				else if (_dbl)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(130.0f,10.0f,115.0f,748.0f) apps:tmp1 active:NO];
+				else
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f, 748.0f/2 + 5.0f, 115.0f,748.0f/2 - 5.0f) apps:tmp1 active:NO];
+				
+			} else {
+				if (!_dbl)
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f, 155.0f, 80.0f, 155.0f) apps:tmp1 active:NO];
+				else
+					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(90.0f, 5.0f, 80.0f, 310.0f) apps:tmp1 active:NO];
+			}
 		}
 		_favoriteAppsScrollView.alpha = 0.0f;
 		[self addSubview:_favoriteAppsScrollView];
@@ -459,15 +479,34 @@ static int getFreeMemory() {
 	[_activeAppsScrollView removeFromSuperview];
 	[_activeAppsScrollView release];
 	_activeAppsScrollView = nil;
-	if isWildcat {
-		if (!_wide)
-			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,380.0f,115.0f) apps:apps active:YES];
-		else if (!_favs || (_dbl && _favs))
-			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f,115.0f) apps:apps active:YES];
-		else
-			_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
+	if (_place == 0 || _place == 1) {
+		if isWildcat {
+			if (!_wide)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,380.0f,115.0f) apps:apps active:YES];
+			else if (!_favs || (_dbl && _favs))
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f,115.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
+		} else {
+			if (_favs && !_dbl)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,155.0f,80.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
+		}
 	} else {
-		_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
+		if isWildcat {
+			if (!_wide)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,380.0f) apps:apps active:YES];
+			else if (!_favs || (_dbl && _favs))
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f/2 - 5.0f) apps:apps active:YES];
+		} else {
+			if (_favs && !_dbl)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,155.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,310.0f) apps:apps active:YES];
+		}
 	}
 	_activeAppsScrollView.alpha = 0.0f;
 	[self addSubview:_activeAppsScrollView];

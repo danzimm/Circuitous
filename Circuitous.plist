@@ -293,13 +293,13 @@
 			<key>cell</key>
 			<string>PSTitleValueCell</string>
 			<key>label</key>
-			<string>Jimmy Emrich, and Surenix, Josh Calvetti, and</string>
+			<string>Jimmy Emrich, and @JoshCalvetti, and</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSTitleValueCell</string>
 			<key>label</key>
-			<string>Madlag for their awesome gfx!</string>
+			<string>Madlag (Joseph Boone) for their awesome gfx!</string>
 		</dict>
 	</array>
 	<key>title</key>

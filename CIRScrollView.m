@@ -3,6 +3,8 @@
 #import "CIRScrollView.h"
 #import "CIRIcon.h"
 
+#import "DSDisplayController.h"
+
 @interface UIDevice (iPad)
 - (BOOL)isWildcat;
 @end
@@ -26,7 +28,7 @@ static NSArray *_activeApps = nil;
 	if (active) {
 		if (_activeApps)
 			[_activeApps release];
-		_activeApps = [[NSArray alloc] initWithArray:apps];
+		_activeApps = [[NSArray alloc] initWithArray:[[DSDisplayController sharedInstance] activeApps]];
 	}
 	BOOL closeBox = [prefs objectForKey:@"close"] ? [[prefs objectForKey:@"close"] boolValue] : YES;
 	appSet = [[NSArray alloc] initWithArray:apps];

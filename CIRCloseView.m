@@ -6,11 +6,22 @@
 
 #import "DSDisplayController.h"
 
+@interface UIDevice (iPad)
+- (BOOL)isWildcat;
+@end
+
+#define isWildcat ([[UIDevice currentDevice] respondsToSelector:@selector(isWildcat)] && [[UIDevice currentDevice] isWildcat])
+
 @implementation CIRCloseView
 
 - (id)initWithIdentifier:(NSString *)ident animations:(BOOL)animate
 {
-	id orig = [super initWithImage:[UIImage imageNamed:@"closebox.png"]];
+	id orig;
+	if isWildcat {
+		orig = [super initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/closebox-ipad.png"]];
+	} else {
+		orig = [super initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/closebox-iphone.png"]];
+	}
 	_animate = animate;
 	self.userInteractionEnabled = YES;
 	_identifier = [ident retain];
