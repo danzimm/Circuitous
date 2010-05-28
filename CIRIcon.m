@@ -34,6 +34,7 @@ static BOOL horiz = NO;
 
 - (id)initWithIdentifier:(NSString *)ident andXCoor:(int)coor animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge
 {
+	horiz = NO;
 	if isWildcat {
 		id orig = [super initWithFrame:CGRectMake(coor, 5.0f, 74.0f, 105.0f)];
 		_animate = animations;

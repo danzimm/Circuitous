@@ -63,7 +63,7 @@ static NSArray *_activeApps = nil;
 	if isWildcat
 		multi = 75.0f;
 	else
-		multi = 60.0f;
+		multi = 40.0f;
 	NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
 	if (active) {
 		if (_activeApps)
