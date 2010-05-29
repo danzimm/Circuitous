@@ -70,7 +70,7 @@ static NSMutableArray *_activeApps = nil;
 	id orig = [super initWithFrame:frame];
 	float multi;
 	if isWildcat
-		multi = 75.0f;
+		multi = 55.0f;
 	else
 		multi = 40.0f;
 	NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];

@@ -159,10 +159,17 @@ static BOOL horiz = NO;
 - (void)setActive
 {
 	_iconClose = [[CIRCloseView alloc] initWithIdentifier:_identifier animations:_animate];
-	if isWildcat
-		_iconClose.center = CGPointMake(0.0f, 7.5f);
-	else
-		_iconClose.center = CGPointMake(0.0f,6.0f);
+	if (!horiz) {
+		if isWildcat
+			_iconClose.center = CGPointMake(0.0f, 7.5f);
+		else
+			_iconClose.center = CGPointMake(0.0f,6.0f);
+	} else {
+		if isWildcat
+			_iconClose.center = CGPointMake(2.5f, 7.5f);
+		else
+			_iconClose.center = CGPointMake(2.5f,6.0f);
+	}
 	[self addSubview:_iconClose];
 }
 
