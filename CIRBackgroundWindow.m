@@ -75,8 +75,14 @@ static int getFreeMemory() {
 }
 */
 static BOOL stop = NO;
+static UIModalView *_alert = nil;
 
 @implementation CIRBackgroundWindow
+
++ (UIModalView *)currentView
+{
+	return _alert;
+}
 
 - (id)init
 {
@@ -99,6 +105,7 @@ static BOOL stop = NO;
 	UITouch *touch = [touches anyObject];
 	start = [touch locationInView:self];
 }
+
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -473,10 +480,11 @@ static BOOL stop = NO;
 		self.alpha = 0.0f;
 		self.hidden = YES;
 		[UIView commitAnimations];
-		UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Free Memory" buttons:[NSArray arrayWithObjects:@"Twice", @"Once", @"Cancel", nil] defaultButtonIndex:0 delegate:self context:NULL];
-		[alert setNumberOfRows:2];
-		[alert popupAlertAnimated:YES];
-		[alert release];
+		if (!_alert) {
+			_alert = [[UIModalView alloc] initWithTitle:@"Free Memory" buttons:[NSArray arrayWithObjects:@"Thrice", @"Twice", @"Once", @"Cancel", nil] defaultButtonIndex:0 delegate:self context:NULL];
+			[_alert setNumberOfRows:2];
+			[_alert popupAlertAnimated:YES];
+		}
 	}
 	[self performSelector:@selector(hideIt) withObject:nil afterDelay:0.3f];
 }
@@ -487,13 +495,20 @@ static BOOL stop = NO;
 		case 0:
 			freeMemory();
 			freeMemory();
+			freeMemory();
 			break;
 		case 1:
+			freeMemory();
+			freeMemory();
+			break;
+		case 2:
 			freeMemory();
 			break;
 		default:
 			break;
 	}
+	[_alert release];
+	_alert = nil;
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.1f];
 	self.alpha = 0.5f;

@@ -6,10 +6,14 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
+#import "UIModalView.h"
+
+@class UIModalView;
 
 @interface CIRBackgroundWindow : UIWindow
 {
 	CGPoint start;
 }
++ (UIModalView *)currentView;
 - (void)hideIt;
 @end

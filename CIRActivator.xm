@@ -8,6 +8,7 @@
 
 #import "CIRActivator.h"
 #import "CIRLauncherHandler.h"
+#import "CIRBackgroundWindow.h"
 
 #import "UIModalView.h"
 #import "DSDisplayController.h"
@@ -63,7 +64,7 @@ static void UpdatePreferences() {
 @implementation CIRActivator
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
 {
-	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled)
+	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled || [CIRBackgroundWindow currentView])
 		return;
 	if (!sharedLauncher) {
 		sharedLauncher = [[CIRLauncherHandler alloc] init];
@@ -167,6 +168,8 @@ static void UpdatePreferences() {
 - (void)_handleMenuButtonEvent
 {
 	if (sharedLauncher) {
+		if ([CIRBackgroundWindow currentView])
+			return;
 		if ([sharedLauncher animateOut]) {
 			[sharedLauncher release];
 			sharedLauncher = nil;
@@ -182,6 +185,8 @@ static void UpdatePreferences() {
 {
 	%orig;
 	if (sharedLauncher) {
+		if ([CIRBackgroundWindow currentView])
+			return;
 		if ([sharedLauncher animateOut]) {
 			[sharedLauncher release];
 			sharedLauncher = nil;
@@ -193,6 +198,8 @@ static void UpdatePreferences() {
 {
 	%orig;
 	if (sharedLauncher) {
+		if ([CIRBackgroundWindow currentView])
+			return;
 		if ([sharedLauncher animateOut]) {
 			[sharedLauncher release];
 			sharedLauncher = nil;
@@ -238,7 +245,7 @@ static void UpdatePreferences() {
 %new(v@:)
 - (void)hideCircuitous
 {
-	if (!sharedLauncher)
+	if (!sharedLauncher || [CIRBackgroundWindow currentView])
 		return;
 	if ([sharedLauncher animateOut]) {
 		[sharedLauncher release];
