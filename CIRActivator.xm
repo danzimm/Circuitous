@@ -67,9 +67,7 @@ static void UpdatePreferences() {
 		return;
 	if (!sharedLauncher) {
 		sharedLauncher = [[CIRLauncherHandler alloc] init];
-		NSLog(@"Made the launcher");
 		[sharedLauncher animateIn];
-		NSLog(@"Animated in");
 	} else if ([sharedLauncher animateOut]) {
 		[sharedLauncher release];
 		sharedLauncher = nil;
@@ -263,6 +261,8 @@ static void UpdatePreferences() {
 	} else {
 		[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:[apps objectAtIndex:_currentApp] animated:_animations];
 	}
+	if (!isWildcat)
+		[apps release];
 }	
 
 %end
@@ -280,6 +280,8 @@ static void UpdatePreferences() {
 		if ([app isEqualToString:[self displayIdentifier]])
 			_currentApp = i;
 	}
+	if (!isWildcat)
+		[apps release];
 	if (sharedLauncher) {
 		[sharedLauncher relayout];
 	}
@@ -295,6 +297,8 @@ static void UpdatePreferences() {
 		if ([app isEqualToString:[self displayIdentifier]])
 			_currentApp = i;
 	}
+	if (!isWildcat)
+		[apps release];
 	if (sharedLauncher) {
 		[sharedLauncher relayout];
 	}
@@ -310,6 +314,8 @@ static void UpdatePreferences() {
 		if ([app isEqualToString:[self displayIdentifier]])
 			_currentApp = i;
 	}
+	if (!isWildcat)
+		[apps release];
 	if (sharedLauncher) {
 		[sharedLauncher relayout];
 	}
