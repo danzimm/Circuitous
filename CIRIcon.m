@@ -314,18 +314,6 @@ static CGPoint _start;
 
 - (void)dealloc
 {
-	[_iconImage removeFromSuperview];
-	[_iconImage release];
-	[_iconName removeFromSuperview];
-	[_iconName release];
-	if (_badge) {
-		[_badge removeFromSuperview];
-		[_badge release];
-	}
-	if (_iconClose) {
-		[_iconClose removeFromSuperview];
-		[_iconClose release];
-	}
 	[_identifier release];
 	[super dealloc];
 }

@@ -650,17 +650,7 @@ static int getFreeMemory() {
 
 - (void)dealloc
 {
-	[_backgroundView removeFromSuperview];
-	[_backgroundView release];
-	[_activeAppsScrollView removeFromSuperview];
-	[_activeAppsScrollView release];
-	if (_favs) {
-		[_favoriteAppsScrollView removeFromSuperview];
-		[_favoriteAppsScrollView release];
-	}
 	if (_freememory) {
-		[_fm removeFromSuperview];
-		[_fm release];
 		[_fmTimer invalidate];
 	}
 	[super dealloc];
