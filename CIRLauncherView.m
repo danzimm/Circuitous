@@ -246,13 +246,63 @@ static int getFreeMemory() {
 	if (_freememory) {
 		_fmTimer = [NSTimer scheduledTimerWithTimeInterval:1/1 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
 		_fm = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,0.0f,100.0f,12.0f)];
-		if (_favs && !_wide)
-			_fm.center = self.center;
-		else {
-			if isWildcat
-				_fm.center = CGPointMake(self.center.x, 125.0f-12.0f);
-			else
-				_fm.center = CGPointMake(self.center.x, 90.0f - 12.0f);
+		if isWildcat {
+			switch (_place) {
+				case 0:
+					if ((_favs && !_wide) || (_favs && _dbl && _wide)) {
+						_fm.center = self.center;
+					} else {
+						_fm.center = CGPointMake(self.center.x, 125.0f-12.0f);
+					}
+				case 1:
+					if ((_favs && !_wide) || (_favs && _dbl && _wide)) {
+						_fm.center = self.center;
+					} else {
+						_fm.center = CGPointMake(self.center.x, 125.0f-12.0f);
+					}
+					break;
+				case 2:
+					_fm.center = CGPointMake(self.center.x - 5.0f, 15.0f);
+					break;
+				case 3:
+					_fm.center = CGPointMake(self.center.x - 5.0f, 15.0f);
+					break;
+				default:
+					break;
+			}
+		} else {
+			switch (_place) {
+				case 0:
+					if (_favs && _dbl) {
+						_fm.center = self.center;
+					} else {
+						_fm.center = CGPointMake(self.center.x, 90.0f - 12.0f);
+					}
+					break;
+				case 1:
+					if (_favs && _dbl) {
+						_fm.center = self.center;
+					} else {
+						_fm.center = CGPointMake(self.center.x, 12.0f);
+					}
+					break;
+				case 2:
+					if (_favs && _dbl) {
+						_fm.center = self.center;
+					} else {
+						_fm.center = CGPointMake(self.center.x, 12.0f);
+					}
+					break;
+				case 3:
+					if (_favs && _dbl) {
+						_fm.center = self.center;
+					} else {
+						_fm.center = CGPointMake(self.center.x, 12.0f);
+					}
+					break;
+				default:
+					break;
+			}
 		}
 		_fm.font = [UIFont systemFontOfSize:12.0f];
 		_fm.textAlignment = UITextAlignmentCenter;

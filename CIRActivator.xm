@@ -23,6 +23,7 @@ static BOOL _uninstalled = NO;
 static int _orientation = 0;
 static int _currentApp = 0;
 static BOOL _animations = YES;
+static BOOL _busy = NO;
 
 %class SBAwayController;
 %class SBIconModel;
@@ -64,7 +65,7 @@ static void UpdatePreferences() {
 @implementation CIRActivator
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
 {
-	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled || [CIRBackgroundWindow currentView])
+	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled || [CIRBackgroundWindow currentView] || _busy)
 		return;
 	if (!sharedLauncher) {
 		sharedLauncher = [[CIRLauncherHandler alloc] init];
@@ -90,7 +91,7 @@ static void UpdatePreferences() {
 @implementation CIRActivatorCycler
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
 {
-	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled)
+	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled || _busy)
 		return;
 	[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:1];
 	[event setHandled:YES];
@@ -110,7 +111,7 @@ static void UpdatePreferences() {
 @implementation CIRActivatorReverseCycler
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
 {
-	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled)
+	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled || _busy)
 		return;
 	[(SpringBoard *)[UIApplication sharedApplication] cycleAppsWithPlace:-1];
 	[event setHandled:YES];
@@ -130,7 +131,7 @@ static void UpdatePreferences() {
 @implementation CIRActivatorRandom
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
 {
-	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled)
+	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled || _busy)
 		return;
 	int rand = (arc4random() % 10) + 1;
 	if (rand > 5) {
@@ -232,10 +233,16 @@ static void UpdatePreferences() {
 	}
 }
 
+-(void)relaunchSpringBoard
+{
+	_busy = YES;
+	%orig;
+}
+
 %new(v@:)
 - (void)showCircuitous
 {
-	if (sharedLauncher || _uninstalled) {
+	if (sharedLauncher || _uninstalled || _busy) {
 		return;
 	}
 	sharedLauncher = [[CIRLauncherHandler alloc] init];
@@ -245,7 +252,7 @@ static void UpdatePreferences() {
 %new(v@:)
 - (void)hideCircuitous
 {
-	if (!sharedLauncher || [CIRBackgroundWindow currentView])
+	if (!sharedLauncher || [CIRBackgroundWindow currentView] || _busy)
 		return;
 	if ([sharedLauncher animateOut]) {
 		[sharedLauncher release];
@@ -256,6 +263,10 @@ static void UpdatePreferences() {
 %new(v@:i)
 - (void)cycleAppsWithPlace:(int)place
 {
+	if (_busy)
+		return;
+	NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
+	NSArray *hidden = [[NSArray alloc] initWithArray:(NSArray *)[prefs objectForKey:@"hidden"]];
 	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
 	_currentApp = _currentApp + place;
 	if (_currentApp < -1) {
@@ -266,10 +277,18 @@ static void UpdatePreferences() {
 	if (_currentApp == -1) {
 		[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:@"com.apple.springboard" animated:_animations];
 	} else {
-		[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:[apps objectAtIndex:_currentApp] animated:_animations];
+		if ([hidden containsObject:[apps objectAtIndex:_currentApp]]) {
+			if (!isWildcat)
+				[apps release];
+			[hidden release];
+			[self cycleAppsWithPlace:place];
+		} else {
+			[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:[apps objectAtIndex:_currentApp] animated:_animations];
+			if (!isWildcat)
+				[apps release];
+			[hidden release];
+		}
 	}
-	if (!isWildcat)
-		[apps release];
 }	
 
 %end
@@ -280,6 +299,8 @@ static void UpdatePreferences() {
 - (void)launchSucceeded:(BOOL)unknownFlag
 {
 	%orig;
+	if (_busy)
+		return;
 	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
 	int i = -1;
 	for (NSString *app in apps) {
@@ -297,6 +318,8 @@ static void UpdatePreferences() {
 - (void)exitedAbnormally
 {
 	%orig;
+	if (_busy)
+		return;
 	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
 	int i = -1;
 	for (NSString *app in apps) {
@@ -314,6 +337,8 @@ static void UpdatePreferences() {
 - (void)exitedCommon
 {
     %orig;
+	if (_busy)
+		return;
 	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
 	int i = -1;
 	for (NSString *app in apps) {
