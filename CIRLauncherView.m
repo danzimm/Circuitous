@@ -387,10 +387,12 @@ static int getFreeMemory() {
 				case 3:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
 					[self setFrame:CGRectMake((CGRectGetMaxX([[UIScreen mainScreen] bounds]) - 20.0f) - mainRect.size.height, 0.0f, mainRect.size.height, mainRect.size.width)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 4:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
 					[self setFrame:CGRectMake(20.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 1:
 				default:
@@ -407,10 +409,12 @@ static int getFreeMemory() {
 				case 3:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
 					[self setFrame:CGRectMake(0.0f, 0.0f, mainRect.size.height, mainRect.size.width)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 4:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
 					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.height, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 1:
 				default:
@@ -423,6 +427,7 @@ static int getFreeMemory() {
 				case 2:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
 					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, mainRect.size.width, mainRect.size.height)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 3:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
@@ -435,6 +440,7 @@ static int getFreeMemory() {
 				case 1:
 				default:
 					[self setFrame:CGRectMake(0.0f, 20.0f, mainRect.size.width, mainRect.size.height)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 			}
 			break;
@@ -443,6 +449,7 @@ static int getFreeMemory() {
 				case 2:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
 					[self setFrame:CGRectMake(0.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, mainRect.size.width, mainRect.size.height)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 3:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
@@ -455,6 +462,7 @@ static int getFreeMemory() {
 				case 1:
 				default:
 					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, 20.0f, mainRect.size.width, mainRect.size.height)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 			}
 			break;
@@ -597,10 +605,12 @@ static int getFreeMemory() {
 				case 3:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
 					[self setFrame:CGRectMake((CGRectGetMaxX([[UIScreen mainScreen] bounds]) - 20.0f) - mainRect.size.height, 0.0f, mainRect.size.height, mainRect.size.width)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 4:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
 					[self setFrame:CGRectMake(20.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 1:
 				default:
@@ -618,10 +628,12 @@ static int getFreeMemory() {
 				case 3:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
 					[self setFrame:CGRectMake(0.0f, 0.0f, mainRect.size.height, mainRect.size.width)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 4:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * -90)];
 					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.height, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.width, mainRect.size.height, mainRect.size.width)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 1:
 				default:
@@ -635,6 +647,7 @@ static int getFreeMemory() {
 				case 2:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
 					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, mainRect.size.width, mainRect.size.height)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 3:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
@@ -648,6 +661,7 @@ static int getFreeMemory() {
 				default:
 					[self setTransform:CGAffineTransformMakeRotation(0.0f)];
 					[self setFrame:CGRectMake(0.0f, 20.0f, mainRect.size.width, mainRect.size.height)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 			}
 			break;
@@ -656,6 +670,7 @@ static int getFreeMemory() {
 				case 2:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 180)];
 					[self setFrame:CGRectMake(0.0f, CGRectGetMaxY([[UIScreen mainScreen] bounds]) - mainRect.size.height - 20.0f, mainRect.size.width, mainRect.size.height)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 				case 3:
 					[self setTransform:CGAffineTransformMakeRotation((M_PI/180) * 90)];
@@ -669,6 +684,7 @@ static int getFreeMemory() {
 				default:
 					[self setTransform:CGAffineTransformMakeRotation(0.0f)];
 					[self setFrame:CGRectMake(CGRectGetMaxX([[UIScreen mainScreen] bounds]) - mainRect.size.width, 20.0f, mainRect.size.width, mainRect.size.height)];
+					[self setCenter:CGPointMake(self.center.x, CGRectGetMidY([[UIScreen mainScreen] bounds]))];
 					break;
 			}
 			break;
