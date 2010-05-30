@@ -77,7 +77,14 @@ static NSMutableArray *_activeApps = nil;
 	if (active) {
 		if (_activeApps)
 			[_activeApps release];
-		_activeApps = [[NSArray alloc] initWithArray:apps];
+		NSArray *apps1 = [[DSDisplayController sharedInstance] activeApps];
+		_activeApps = [[NSMutableArray alloc] initWithArray:apps1];
+		if (!isWildcat)
+			[apps1 release];
+		for (NSString *app in apps) {
+			if (![_activeApps containsObject:app])
+				[_activeApps addObject:app];
+		}
 	}
 	BOOL closeBox = [prefs objectForKey:@"close"] ? [[prefs objectForKey:@"close"] boolValue] : YES;
 	appSet = [[NSArray alloc] initWithArray:apps];
