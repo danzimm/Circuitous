@@ -187,7 +187,8 @@ static int _transition = 0;
 	_busy = YES;
 	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
 	[_mainView relayoutWithApps:apps];
-	[apps release];
+	if (!isWildcat)
+		[apps release];
 	[self performSelector:@selector(stoppedRelaying) withObject:nil afterDelay:0.26f];
 	return YES;
 }

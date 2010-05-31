@@ -591,6 +591,8 @@ static int getFreeMemory() {
 
 - (void)reorientateWithPlace:(int)place
 {
+	if (place == _orientation)
+		return;
 	_orientation = place;
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.32f];
