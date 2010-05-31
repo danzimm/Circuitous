@@ -36,7 +36,6 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-//	[super touchesEnded:touches withEvent:event];
 	if (!_activity) {
 		[self setImage:nil];
 		_activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

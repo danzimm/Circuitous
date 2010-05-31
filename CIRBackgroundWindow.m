@@ -101,7 +101,6 @@ static UIModalView *_alert = nil;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	[super touchesBegan:touches withEvent:event];
 	UITouch *touch = [touches anyObject];
 	start = [touch locationInView:self];
 }
@@ -109,7 +108,6 @@ static UIModalView *_alert = nil;
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	[super touchesEnded:touches withEvent:event];
 	if isWildcat {
 		_orientation = [(SpringBoard *)[UIApplication sharedApplication] activeInterfaceOrientation];
 	} else {

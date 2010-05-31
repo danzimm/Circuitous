@@ -187,7 +187,6 @@ static CGPoint _start;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	[super touchesBegan:touches withEvent:event];
 	[UIView beginAnimations:nil context:NULL];
 	self.alpha = 0.5f;
 	[UIView commitAnimations];
@@ -212,7 +211,6 @@ static CGPoint _start;
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	[super touchesMoved:touches withEvent:event];
 	UITouch *touch = [touches anyObject];
 	CGPoint currentPosition = [touch locationInView:[self superview]];
 	if (_holdTimer || (!_holdTimer && !_iconClose)) {
@@ -246,7 +244,6 @@ static CGPoint _start;
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	[super touchesEnded:touches withEvent:event];
 	UITouch *touch = [touches anyObject];
 	self.alpha = 1.0f;
 	if (_holdTimer || (!_holdTimer && !_iconClose)) {

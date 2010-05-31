@@ -245,8 +245,10 @@ static void UpdatePreferences() {
 	if (sharedLauncher || _uninstalled || _busy) {
 		return;
 	}
+	_busy = YES;
 	sharedLauncher = [[CIRLauncherHandler alloc] init];
 	[sharedLauncher animateIn];
+	_busy = NO;
 }
 
 %new(v@:)
@@ -254,10 +256,12 @@ static void UpdatePreferences() {
 {
 	if (!sharedLauncher || [CIRBackgroundWindow currentView] || _busy)
 		return;
+	_busy = YES;
 	if ([sharedLauncher animateOut]) {
 		[sharedLauncher release];
 		sharedLauncher = nil;
 	}
+	_busy = NO;
 }
 
 %new(v@:i)
@@ -265,6 +269,7 @@ static void UpdatePreferences() {
 {
 	if (_busy)
 		return;
+	_busy = YES;
 	NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
 	NSArray *hidden = [[NSArray alloc] initWithArray:(NSArray *)[prefs objectForKey:@"hidden"]];
 	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
@@ -289,6 +294,7 @@ static void UpdatePreferences() {
 			[hidden release];
 		}
 	}
+	_busy = NO;
 }	
 
 %end
