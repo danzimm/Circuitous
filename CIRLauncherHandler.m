@@ -42,9 +42,8 @@ static int _transition = 0;
 	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
 	NSArray *array = [[NSArray alloc] initWithArray:(NSArray *)[prefs objectForKey:@"favorites"]];
 	_mainView = [[CIRLauncherView alloc] initWithActiveApps:apps favoriteApps:array window:_backgroundWindow];
-	if (!isWildcat)
-		[apps release];
 	[array release];
+	[apps release];
 	_busy = NO;
 	[prefs release];
 	return self;
@@ -187,8 +186,7 @@ static int _transition = 0;
 	_busy = YES;
 	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
 	[_mainView relayoutWithApps:apps];
-	if (!isWildcat)
-		[apps release];
+	[apps release];
 	[self performSelector:@selector(stoppedRelaying) withObject:nil afterDelay:0.26f];
 	return YES;
 }

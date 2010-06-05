@@ -15,43 +15,6 @@ static int _orientation = 1;
 static BOOL _dbl = NO;
 static int _place = 0;
 
-static int GetBytesToMalloc();
-
-static void freeMemory()
-{
-	id POOL = [[NSAutoreleasePool alloc] init];
-	
-	int AllocSize =  GetBytesToMalloc();
-	void* Test = malloc(AllocSize);
-	if(Test != NULL)
-	{
-		NSLog(@"Processing %d bytes\n", AllocSize);
-		memset(Test, 0, AllocSize);
-		free(Test);
-	}
-	
-	[POOL release];
-	
-}
-
-static int GetBytesToMalloc()
-{
-	// Get page size.
-	vm_size_t pageSize;
-	host_page_size(mach_host_self(), &pageSize);	
-	
-	// Get used memory
-	struct vm_statistics VmStats;
-	mach_msg_type_number_t host_info_count;
-	host_info_count = sizeof(VmStats);
-	host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&VmStats, &host_info_count);
-	
-	int AvailableMemory = VmStats.free_count + VmStats.inactive_count;
-	AvailableMemory = AvailableMemory * pageSize;
-	
-	return AvailableMemory;
-}
-
 static int getFreeMemory() {
 	vm_size_t pageSize;
 	host_page_size(mach_host_self(), &pageSize);
@@ -495,10 +458,45 @@ static int getFreeMemory() {
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.25f];
 	_activeAppsScrollView.alpha = 0.0f;
+	[_activeAppsScrollView removeFromSuperview];
+	[_activeAppsScrollView release];
+	_activeAppsScrollView = nil;
 	if (_favs) {
 		[_favoriteAppsScrollView removeFromSuperview];
 		[_favoriteAppsScrollView release];
 		_favoriteAppsScrollView = nil;
+	}
+	if (_place == 0 || _place == 1) {
+		if isWildcat {
+			if (!_wide)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,380.0f,115.0f) apps:apps active:YES];
+			else if (!_favs || (_dbl && _favs))
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f,115.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
+		} else {
+			if (_favs && !_dbl)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,155.0f,80.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
+		}
+	} else {
+		if isWildcat {
+			if (!_wide)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,380.0f) apps:apps active:YES];
+			else if (!_favs || (_dbl && _favs))
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f/2 - 5.0f) apps:apps active:YES];
+		} else {
+			if (_favs && !_dbl)
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,155.0f) apps:apps active:YES];
+			else
+				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,310.0f) apps:apps active:YES];
+		}
+	}
+	_activeAppsScrollView.alpha = 0.0f;
+	if (_favs) {
 		if (_place == 0 || _place == 1) {
 			if isWildcat {
 				if (!_wide)
@@ -534,59 +532,10 @@ static int getFreeMemory() {
 		[self addSubview:_favoriteAppsScrollView];
 		_favoriteAppsScrollView.alpha = 1.0f;
 	}
-	[_activeAppsScrollView removeFromSuperview];
-	[_activeAppsScrollView release];
-	_activeAppsScrollView = nil;
-	if (_place == 0 || _place == 1) {
-		if isWildcat {
-			if (!_wide)
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,380.0f,115.0f) apps:apps active:YES];
-			else if (!_favs || (_dbl && _favs))
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f,115.0f) apps:apps active:YES];
-			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
-		} else {
-			if (_favs && !_dbl)
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,155.0f,80.0f) apps:apps active:YES];
-			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
-		}
-	} else {
-		if isWildcat {
-			if (!_wide)
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,380.0f) apps:apps active:YES];
-			else if (!_favs || (_dbl && _favs))
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f) apps:apps active:YES];
-			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f/2 - 5.0f) apps:apps active:YES];
-		} else {
-			if (_favs && !_dbl)
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,155.0f) apps:apps active:YES];
-			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,310.0f) apps:apps active:YES];
-		}
-	}
-	_activeAppsScrollView.alpha = 0.0f;
 	[self addSubview:_activeAppsScrollView];
 	_activeAppsScrollView.alpha = 1.0f;
 	[UIView commitAnimations];
 	[tmp1 release];
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-	UITouch *touch = [touches anyObject];
-	if (touch.tapCount == 2) {
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:0.1f];
-		_bg.alpha = 0.0f;
-		_bg.hidden = YES;
-		[UIView commitAnimations];
-		UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Free Memory" buttons:[NSArray arrayWithObjects:@"Twice", @"Once", @"Cancel", nil] defaultButtonIndex:0 delegate:self context:NULL];
-		[alert setNumberOfRows:2];
-		[alert popupAlertAnimated:YES];
-		[alert release];
-	}
 }
 
 - (void)reorientateWithPlace:(int)place
@@ -696,25 +645,6 @@ static int getFreeMemory() {
 	[UIView commitAnimations];
 }
 
--(void)modalView:(id)view didDismissWithButtonIndex:(int)buttonIndex
-{
-	switch (buttonIndex) {
-		case 0:
-			freeMemory();
-			freeMemory();
-			break;
-		case 1:
-			freeMemory();
-			break;
-		default:
-			break;
-	}
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationDuration:0.1f];
-	_bg.alpha = 0.5f;
-	_bg.hidden = NO;
-	[UIView commitAnimations];
-}
 
 - (void)dealloc
 {

@@ -30,8 +30,7 @@ static NSMutableArray *_activeApps = nil;
 			[_activeApps release];
 		NSArray *apps1 = [[DSDisplayController sharedInstance] activeApps];
 		_activeApps = [[NSMutableArray alloc] initWithArray:apps1];
-		if (!isWildcat)
-			[apps1 release];
+		[apps1 release];
 		for (NSString *app in apps) {
 			if (![_activeApps containsObject:app])
 				[_activeApps addObject:app];
@@ -79,8 +78,7 @@ static NSMutableArray *_activeApps = nil;
 			[_activeApps release];
 		NSArray *apps1 = [[DSDisplayController sharedInstance] activeApps];
 		_activeApps = [[NSMutableArray alloc] initWithArray:apps1];
-		if (!isWildcat)
-			[apps1 release];
+		[apps1 release];
 		for (NSString *app in apps) {
 			if (![_activeApps containsObject:app])
 				[_activeApps addObject:app];

@@ -283,15 +283,13 @@ static void UpdatePreferences() {
 		[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:@"com.apple.springboard" animated:_animations];
 	} else {
 		if ([hidden containsObject:[apps objectAtIndex:_currentApp]]) {
-			if (!isWildcat)
-				[apps release];
 			[hidden release];
+			[apps release];
 			[self cycleAppsWithPlace:place];
 		} else {
 			[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:[apps objectAtIndex:_currentApp] animated:_animations];
-			if (!isWildcat)
-				[apps release];
 			[hidden release];
+			[apps release];
 		}
 	}
 	_busy = NO;
@@ -314,8 +312,7 @@ static void UpdatePreferences() {
 		if ([app isEqualToString:[self displayIdentifier]])
 			_currentApp = i;
 	}
-	if (!isWildcat)
-		[apps release];
+	[apps release];
 	if (sharedLauncher) {
 		[sharedLauncher relayout];
 	}
@@ -333,8 +330,7 @@ static void UpdatePreferences() {
 		if ([app isEqualToString:[self displayIdentifier]])
 			_currentApp = i;
 	}
-	if (!isWildcat)
-		[apps release];
+	[apps release];
 	if (sharedLauncher) {
 		[sharedLauncher relayout];
 	}
@@ -352,8 +348,7 @@ static void UpdatePreferences() {
 		if ([app isEqualToString:[self displayIdentifier]])
 			_currentApp = i;
 	}
-	if (!isWildcat)
-		[apps release];
+	[apps release];
 	if (sharedLauncher) {
 		[sharedLauncher relayout];
 	}
@@ -429,11 +424,11 @@ static void UpdatePreferences() {
 {
 	%orig;
 	NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"]?:[[NSMutableDictionary alloc] init];
-	if (![prefs objectForKey:@"1.6.4beta"]) {
-		[prefs setObject:@"OK" forKey:@"1.6.4beta"];
+	if (![prefs objectForKey:@"2.0"]) {
+		[prefs setObject:@"OK" forKey:@"2.0"];
 		[prefs writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
-		UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Welcome to Circuitous 1.6.4beta" buttons:[NSArray arrayWithObjects:@"Settings", @"Later", nil] defaultButtonIndex:0 delegate:self context:NULL];
-		[alert setBodyText:@"You should go configure your settings in the settings app before continuing. Remember to read the tutorial at the bottom(DO IT AGAIN STUFF HAS CHANGED)! I actually suggest doing this first!"];
+		UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Welcome to Circuitous 2.0" buttons:[NSArray arrayWithObjects:@"Settings", @"Later", nil] defaultButtonIndex:0 delegate:self context:NULL];
+		[alert setBodyText:@"You should go configure your settings in the settings app before continuing. Remember to read the tutorial at the bottom. I actually suggest doing this first!"];
 		[alert setNumberOfRows:1];
 		[alert popupAlertAnimated:YES];
 		[alert release];
