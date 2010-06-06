@@ -3,6 +3,8 @@
 #import <SpringBoard/SBIcon.h>
 #import <SpringBoard/SBIconBadge.h>
 #import <SpringBoard/SpringBoard.h>
+#import <SpringBoard/SBApplication.h>
+#import <SpringBoard/SBApplicationController.h>
 
 #import "DSDisplayController.h"
 
@@ -32,17 +34,32 @@ static BOOL horiz = NO;
 
 @implementation CIRIcon
 
-- (id)initWithIdentifier:(NSString *)ident andXCoor:(int)coor animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge
+- (id)initWithIdentifier:(NSString *)ident andXCoor:(int)coor animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge holdTime:(float)time themedIcon:(BOOL)icon
 {
 	horiz = NO;
+	holdTime = time;
 	if isWildcat {
 		id orig = [super initWithFrame:CGRectMake(coor, 5.0f, 74.0f, 105.0f)];
 		_animate = animations;
 		_identifier = [ident retain];
 		if ([_identifier isEqualToString:@"com.apple.springboard"])
 			_iconImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/springboard.png"]];
-		else
-			_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] getIconImage:2]];
+		else {
+			if (icon)
+				_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] getIconImage:2]];
+			else {
+				NSBundle *bundle = [[[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:_identifier] bundle];
+				UIImage *image = nil;
+				image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Icon-72" ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"icon-72" ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[bundle infoDictionary] objectForKey:@"CFBundleIconFile"] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[[bundle infoDictionary] objectForKey:@"CFBundleIconFiles"] objectAtIndex:1] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
+				_iconImage = [[UIImageView alloc] initWithImage:image];
+			}
+		}
 		_iconImage.frame = CGRectMake(0.0f, 7.5f, _iconImage.frame.size.width, _iconImage.frame.size.height);
 		[self addSubview:_iconImage];
 		if (label) {
@@ -69,8 +86,22 @@ static BOOL horiz = NO;
 		_identifier = [ident retain];
 		if ([_identifier isEqualToString:@"com.apple.springboard"])
 			_iconImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/springboard-phone.png"]];
-		else
-			_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] icon]];
+		else {
+			if (icon)
+				_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] icon]];
+			else {
+				NSBundle *bundle = [[[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:_identifier] bundle];
+				UIImage *image = nil;
+				image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Icon" ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"icon" ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[bundle infoDictionary] objectForKey:@"CFBundleIconFile"] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[[bundle infoDictionary] objectForKey:@"CFBundleIconFiles"] objectAtIndex:0] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
+				_iconImage = [[UIImageView alloc] initWithImage:image];
+			}
+		}
 		_iconImage.frame = CGRectMake(0.0f, 5.0f, _iconImage.frame.size.width, _iconImage.frame.size.height);
 		[self addSubview:_iconImage];
 		if (label) {
@@ -94,17 +125,32 @@ static BOOL horiz = NO;
 	}
 }
 
-- (id)initWithIdentifier:(NSString *)ident andYCoor:(int)coor animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge
+- (id)initWithIdentifier:(NSString *)ident andYCoor:(int)coor animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge holdTime:(float)time themedIcon:(BOOL)icon
 {
 	horiz = YES;
+	holdTime = time;
 	if isWildcat {
 		id orig = [super initWithFrame:CGRectMake(7.5f, coor, 74.0f, 105.0f)];
 		_animate = animations;
 		_identifier = [ident retain];
 		if ([_identifier isEqualToString:@"com.apple.springboard"])
 			_iconImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/springboard.png"]];
-		else
-			_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] getIconImage:2]];
+		else {
+			if (icon)
+				_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] getIconImage:2]];
+			else {
+				NSBundle *bundle = [[[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:_identifier] bundle];
+				UIImage *image = nil;
+				image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Icon-72" ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"icon-72" ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[bundle infoDictionary] objectForKey:@"CFBundleIconFile"] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[[bundle infoDictionary] objectForKey:@"CFBundleIconFiles"] objectAtIndex:1] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
+				_iconImage = [[UIImageView alloc] initWithImage:image];
+			}
+		}
 		_iconImage.frame = CGRectMake(0.0f, 7.5f, _iconImage.frame.size.width, _iconImage.frame.size.height);
 		[self addSubview:_iconImage];
 		if (label) {
@@ -131,8 +177,22 @@ static BOOL horiz = NO;
 		_identifier = [ident retain];
 		if ([_identifier isEqualToString:@"com.apple.springboard"])
 			_iconImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/springboard-phone.png"]];
-		else
-			_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] icon]];
+		else {
+			if (icon)
+				_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] icon]];
+			else {
+				NSBundle *bundle = [[[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:_identifier] bundle];
+				UIImage *image = nil;
+				image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Icon" ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"icon" ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[bundle infoDictionary] objectForKey:@"CFBundleIconFile"] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
+				if (!image)
+					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[[bundle infoDictionary] objectForKey:@"CFBundleIconFiles"] objectAtIndex:0] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
+				_iconImage = [[UIImageView alloc] initWithImage:image];
+			}
+		}
 		_iconImage.frame = CGRectMake(0.0f, 5.0f, _iconImage.frame.size.width, _iconImage.frame.size.height);
 		[self addSubview:_iconImage];
 		if (label) {
@@ -194,7 +254,7 @@ static CGPoint _start;
 	_start = [touch locationInView:self];
 	oldCenter = self.center;
 	if (_iconClose)
-		_holdTimer = [NSTimer scheduledTimerWithTimeInterval:0.5/1 target:self selector:@selector(timerFired:) userInfo:nil repeats:NO];
+		_holdTimer = [NSTimer scheduledTimerWithTimeInterval:holdTime/1 target:self selector:@selector(timerFired:) userInfo:nil repeats:NO];
 }
 
 - (void)timerFired:(NSTimer *)timer

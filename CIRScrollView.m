@@ -36,13 +36,14 @@ static NSMutableArray *_activeApps = nil;
 				[_activeApps addObject:app];
 		}
 	}
+	holdTime = [prefs objectForKey:@"holdtime"] ? [[prefs objectForKey:@"holdtime"] floatValue] : 0.5f;
 	BOOL closeBox = [prefs objectForKey:@"close"] ? [[prefs objectForKey:@"close"] boolValue] : YES;
 	appSet = [[NSArray alloc] initWithArray:apps];
 	float width = 11.0f;
 	int place = -1;
 	for (NSString *app in apps) {
 		place++;
-		CIRIcon *icon = [[CIRIcon alloc] initWithIdentifier:app andXCoor:(11.0f + (place * multi)) animations:([prefs objectForKey:@"appanimations"] ? [[prefs objectForKey:@"appanimations"] boolValue] : YES) labels:([prefs objectForKey:@"icontext"] ? [[prefs objectForKey:@"icontext"] boolValue] : YES) badges:([prefs objectForKey:@"badges"] ? [[prefs objectForKey:@"badges"] boolValue] : YES)];
+		CIRIcon *icon = [[CIRIcon alloc] initWithIdentifier:app andXCoor:(11.0f + (place * multi)) animations:([prefs objectForKey:@"appanimations"] ? [[prefs objectForKey:@"appanimations"] boolValue] : YES) labels:([prefs objectForKey:@"icontext"] ? [[prefs objectForKey:@"icontext"] boolValue] : YES) badges:([prefs objectForKey:@"badges"] ? [[prefs objectForKey:@"badges"] boolValue] : YES) holdTime:holdTime themedIcon:([prefs objectForKey:@"themeicons"] ? [[prefs objectForKey:@"themeicons"] boolValue] : YES)];
 		width = icon.frame.size.width + icon.frame.origin.x;
 		icon.tag = place++;
 		if ([_activeApps containsObject:app] && closeBox)
@@ -84,13 +85,14 @@ static NSMutableArray *_activeApps = nil;
 				[_activeApps addObject:app];
 		}
 	}
+	holdTime = [prefs objectForKey:@"holdtime"] ? [[prefs objectForKey:@"holdtime"] floatValue] : 0.5f;
 	BOOL closeBox = [prefs objectForKey:@"close"] ? [[prefs objectForKey:@"close"] boolValue] : YES;
 	appSet = [[NSArray alloc] initWithArray:apps];
 	float width = 11.0f;
 	int place = -1;
 	for (NSString *app in apps) {
 		place++;
-		CIRIcon *icon = [[CIRIcon alloc] initWithIdentifier:app andYCoor:(11.0f + (place * multi)) animations:([prefs objectForKey:@"appanimations"] ? [[prefs objectForKey:@"appanimations"] boolValue] : YES) labels:([prefs objectForKey:@"icontext"] ? [[prefs objectForKey:@"icontext"] boolValue] : YES) badges:([prefs objectForKey:@"badges"] ? [[prefs objectForKey:@"badges"] boolValue] : YES)];
+		CIRIcon *icon = [[CIRIcon alloc] initWithIdentifier:app andYCoor:(11.0f + (place * multi)) animations:([prefs objectForKey:@"appanimations"] ? [[prefs objectForKey:@"appanimations"] boolValue] : YES) labels:([prefs objectForKey:@"icontext"] ? [[prefs objectForKey:@"icontext"] boolValue] : YES) badges:([prefs objectForKey:@"badges"] ? [[prefs objectForKey:@"badges"] boolValue] : YES) holdTime:holdTime themedIcon:([prefs objectForKey:@"themeicons"] ? [[prefs objectForKey:@"themeicons"] boolValue] : YES)];
 		width = icon.frame.size.height + icon.frame.origin.y;
 		icon.tag = place++;
 		if ([_activeApps containsObject:app] && closeBox)

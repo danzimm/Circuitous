@@ -7,10 +7,11 @@
 #include <ctype.h>
 #include <time.h>
 #import "UIModalViewDelegate.h"
+#import "UIModalView.h"
 @class UIImageView;
 @class CIRScrollView;
 @class UIView;
-@interface CIRLauncherView : UIWindow
+@interface CIRLauncherView : UIWindow<UIModalViewDelegate>
 {
 	UIImageView *_backgroundView;
 	CIRScrollView *_activeAppsScrollView;
@@ -19,7 +20,10 @@
 	NSTimer *_fmTimer;
 	UIWindow *_bg;
 	CGRect mainRect;
+	BOOL stop;
 }
+
++ (UIModalView *)currentView;
 
 - (id)initWithActiveApps:(NSArray *)apps favoriteApps:(NSArray *)apps2 window:(UIWindow *)window;
 - (void)relayoutWithApps:(NSArray *)apps;

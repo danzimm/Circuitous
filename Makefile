@@ -8,6 +8,7 @@ Circuitous_OBJC_FILES = CIRCloseView.m \
 	CIRIcon.m
 Circuitous_OBJCC_FILES = CIRActivator.mm
 Circuitous_FRAMEWORKS = UIKit Foundation CoreFoundation CoreGraphics
+Circuitous_PRIVATE_FRAMEWORKS = SpringBoardServices
 Circuitous_LDFLAGS = -L/Users/Dan/Desktop/libdisplaystack/obj -ldisplaystack -lactivator 
 
 BUNDLE_NAME = CIRPrefs

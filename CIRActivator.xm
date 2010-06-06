@@ -9,11 +9,14 @@
 #import "CIRActivator.h"
 #import "CIRLauncherHandler.h"
 #import "CIRBackgroundWindow.h"
+#import "CIRLauncherView.h"
 
 #import "UIModalView.h"
 #import "DSDisplayController.h"
 
 #include <stdlib.h>
+#include <dlfcn.h>
+#include <notify.h>
 
 static CIRLauncherHandler *sharedLauncher = nil;
 static BOOL _becomeHomeScreen = NO;
@@ -28,6 +31,38 @@ static BOOL _busy = NO;
 %class SBAwayController;
 %class SBIconModel;
 
+
+static BOOL setIconHiding()
+{
+    // Open the libhide helper library.
+    void* libHandle = dlopen("/usr/lib/hide.dylib", RTLD_LAZY);
+    BOOL Changed = NO;
+
+    if (libHandle != NULL) {
+		BOOL (*HideIcon)(NSString*) = dlsym(libHandle, "HideIconViaDisplayId");
+		BOOL (*UnHideIcon)(NSString*) = dlsym(libHandle, "UnHideIconViaDisplayId");
+
+		if (HideIcon != NULL && UnHideIcon != NULL) {
+
+			// Lets always unhide the icon first. If we were unhiding, this works.
+			// If we are hiding,
+			// prevents possibility of duplicate hidden entries in the hidden list.
+	
+			Changed = UnHideIcon(@"com.zimm.circuitous");
+			// Hiding. 
+			if (_hasIcon == NO) {
+				Changed = HideIcon(@"com.zimm.circuitous");
+			}
+		}
+		dlclose(libHandle);
+	}
+    // Tell libhide to reevaluate the hidden icon state.
+    if(Changed == YES) {
+        notify_post("com.libhide.hiddeniconschanged"); 
+    }
+    return Changed;
+}
+
 static void UpdatePreferences() {
 	if (_uninstalled)
 		return;
@@ -35,17 +70,11 @@ static void UpdatePreferences() {
 	_becomeHomeScreen = [prefs objectForKey:@"becomehome"] ? [[prefs objectForKey:@"becomehome"] boolValue] : NO;
 	_onLock = [prefs objectForKey:@"onlock"] ? [[prefs objectForKey:@"onlock"] boolValue] : YES;
 	_animations = [prefs objectForKey:@"appanimations"] ? [[prefs objectForKey:@"appanimations"] boolValue] : YES;
-	BOOL icon = [prefs objectForKey:@"icon"] ? [[prefs objectForKey:@"icon"] boolValue] : YES;
-	if (icon != _hasIcon) {
-		_hasIcon = icon;
-		if (_hasIcon) {
-			[[[$SBIconModel sharedInstance] iconForDisplayIdentifier:@"com.zimm.padlauncher"] setIsHidden:NO animate:YES];
-			[[$SBIconModel sharedInstance] relayout];
-		} else {
-			[[[$SBIconModel sharedInstance] iconForDisplayIdentifier:@"com.zimm.padlauncher"] setIsHidden:YES animate:YES];
-			[[$SBIconModel sharedInstance] relayout];
-		}
-	}
+	_hasIcon = [prefs objectForKey:@"icon"] ? [[prefs objectForKey:@"icon"] boolValue] : YES;
+	if (setIconHiding() == NO)
+		NSLog(@"Icon visibility hasn't changed");
+	else
+		NSLog(@"Changed Icon visibility");
 	[prefs release];
 }
 
@@ -65,7 +94,7 @@ static void UpdatePreferences() {
 @implementation CIRActivator
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
 {
-	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled || [CIRBackgroundWindow currentView] || _busy)
+	if (!_onLock && [[$SBAwayController sharedAwayController] isLocked] || _uninstalled || [CIRBackgroundWindow currentView] || [CIRLauncherView currentView] || _busy)
 		return;
 	if (!sharedLauncher) {
 		sharedLauncher = [[CIRLauncherHandler alloc] init];
@@ -169,7 +198,7 @@ static void UpdatePreferences() {
 - (void)_handleMenuButtonEvent
 {
 	if (sharedLauncher) {
-		if ([CIRBackgroundWindow currentView])
+		if ([CIRBackgroundWindow currentView] || [CIRLauncherView currentView])
 			return;
 		if ([sharedLauncher animateOut]) {
 			[sharedLauncher release];
@@ -186,7 +215,7 @@ static void UpdatePreferences() {
 {
 	%orig;
 	if (sharedLauncher) {
-		if ([CIRBackgroundWindow currentView])
+		if ([CIRBackgroundWindow currentView] || [CIRLauncherView currentView])
 			return;
 		if ([sharedLauncher animateOut]) {
 			[sharedLauncher release];
@@ -199,7 +228,7 @@ static void UpdatePreferences() {
 {
 	%orig;
 	if (sharedLauncher) {
-		if ([CIRBackgroundWindow currentView])
+		if ([CIRBackgroundWindow currentView] || [CIRLauncherView currentView])
 			return;
 		if ([sharedLauncher animateOut]) {
 			[sharedLauncher release];
@@ -254,7 +283,7 @@ static void UpdatePreferences() {
 %new(v@:)
 - (void)hideCircuitous
 {
-	if (!sharedLauncher || [CIRBackgroundWindow currentView] || _busy)
+	if (!sharedLauncher || [CIRBackgroundWindow currentView] || [CIRLauncherView currentView] || _busy)
 		return;
 	_busy = YES;
 	if ([sharedLauncher animateOut]) {
@@ -273,13 +302,14 @@ static void UpdatePreferences() {
 	NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"];
 	NSArray *hidden = [[NSArray alloc] initWithArray:(NSArray *)[prefs objectForKey:@"hidden"]];
 	NSArray *apps = [[DSDisplayController sharedInstance] activeApps];
+	BOOL sb = [prefs objectForKey:@"springboard"] ? [[prefs objectForKey:@"springboard"] boolValue] : YES;
 	_currentApp = _currentApp + place;
 	if (_currentApp < -1) {
 		_currentApp = [apps count] - 1;
 	} else if (_currentApp >= (int)[apps count]) {
 		_currentApp = -1;
 	}
-	if (_currentApp == -1) {
+	if (_currentApp == -1 && sb) {
 		[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:@"com.apple.springboard" animated:_animations];
 	} else {
 		if ([hidden containsObject:[apps objectAtIndex:_currentApp]]) {
@@ -287,6 +317,7 @@ static void UpdatePreferences() {
 			[apps release];
 			[self cycleAppsWithPlace:place];
 		} else {
+			[[DSDisplayController sharedInstance] enableBackgroundingForDisplayIdentifier:[[[DSDisplayController sharedInstance] activeApp] displayIdentifier]];
 			[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:[apps objectAtIndex:_currentApp] animated:_animations];
 			[hidden release];
 			[apps release];
@@ -394,14 +425,6 @@ static void UpdatePreferences() {
 	[alert setNumberOfRows:1];
 	[alert popupAlertAnimated:YES];
 	[alert release];
-}
-
--(id)icon
-{
-	if isWildcat
-		return %orig;
-	else
-		return [UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/icon-phone.png"];
 }
 
 %new(v@:@i)

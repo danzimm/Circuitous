@@ -15,6 +15,45 @@ static int _orientation = 1;
 static BOOL _dbl = NO;
 static int _place = 0;
 
+static int GetBytesToMalloc();
+
+static void freeMemory()
+{
+	id POOL = [[NSAutoreleasePool alloc] init];
+	
+	int AllocSize =  GetBytesToMalloc();
+	void* Test = malloc(AllocSize);
+	if(Test != NULL)
+	{
+		NSLog(@"Processing %d bytes\n", AllocSize);
+		memset(Test, 0, AllocSize);
+		free(Test);
+	}
+	
+	[POOL release];
+	
+}
+
+static int GetBytesToMalloc()
+{
+	// Get page size.
+	vm_size_t pageSize;
+	host_page_size(mach_host_self(), &pageSize);	
+	
+	// Get used memory
+	struct vm_statistics VmStats;
+	mach_msg_type_number_t host_info_count;
+	host_info_count = sizeof(VmStats);
+	host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&VmStats, &host_info_count);
+	
+	int AvailableMemory = VmStats.free_count + VmStats.inactive_count;
+	AvailableMemory = AvailableMemory * pageSize;
+	
+	return AvailableMemory;
+}
+
+
+
 static int getFreeMemory() {
 	vm_size_t pageSize;
 	host_page_size(mach_host_self(), &pageSize);
@@ -34,9 +73,17 @@ static int getFreeMemory() {
 - (BOOL)isWildcat;
 @end
 
+static UIModalView *_alert = nil;
+
 #define isWildcat ([[UIDevice currentDevice] respondsToSelector:@selector(isWildcat)] && [[UIDevice currentDevice] isWildcat])
 
 @implementation CIRLauncherView
+
++ (UIModalView *)currentView
+{
+	return _alert;
+}
+
 
 - (id)initWithActiveApps:(NSArray *)apps favoriteApps:(NSArray *)apps2 window:(UIWindow *)window
 {
@@ -643,6 +690,52 @@ static int getFreeMemory() {
 			break;
 	}
 	[UIView commitAnimations];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	UITouch *touch = [touches anyObject];
+	if (touch.tapCount == 2) {
+		stop = YES;
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationDuration:0.1f];
+		_bg.alpha = 0.0f;
+		_bg.hidden = YES;
+		[UIView commitAnimations];
+		if (!_alert) {
+			_alert = [[UIModalView alloc] initWithTitle:@"Free Memory" buttons:[NSArray arrayWithObjects:@"Thrice", @"Twice", @"Once", @"Cancel", nil] defaultButtonIndex:0 delegate:self context:NULL];
+			[_alert setNumberOfRows:2];
+			[_alert popupAlertAnimated:YES];
+		}
+	}
+}
+
+-(void)modalView:(id)view didDismissWithButtonIndex:(int)buttonIndex
+{
+	switch (buttonIndex) {
+		case 0:
+			freeMemory();
+			freeMemory();
+			freeMemory();
+			break;
+		case 1:
+			freeMemory();
+			freeMemory();
+			break;
+		case 2:
+			freeMemory();
+			break;
+		default:
+			break;
+	}
+	[_alert release];
+	_alert = nil;
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationDuration:0.1f];
+	_bg.alpha = 0.5f;
+	_bg.hidden = NO;
+	[UIView commitAnimations];
+	stop = NO;
 }
 
 

@@ -2,6 +2,7 @@
 
 @interface CIRScrollView : UIScrollView
 {
+	float holdTime;
 }
 
 - (id)initWithFrame:(CGRect)frame apps:(NSArray *)apps active:(BOOL)active;
