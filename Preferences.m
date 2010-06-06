@@ -819,7 +819,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 					if isWildcat {
 						switch (indexPath.row) {
 							case 0:
-								_favs = ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryCheckmark);
+								_favs = (cell.accessoryType == UITableViewCellAccessoryCheckmark);
 								if (_favs && _wide) {
 									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:1], nil] withRowAnimation:UITableViewRowAnimationTop];
 								} else if (_wide) {
@@ -828,10 +828,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 								[dict setObject:[NSNumber numberWithBool:_favs] forKey:@"favs"];
 								break;
 							case 1:
-								if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
-									_wide = NO;
-								else
-									_wide = YES;
+								_wide = (cell.accessoryType == UITableViewCellAccessoryCheckmark);
 								if (_favs && _wide) {
 									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:1], nil] withRowAnimation:UITableViewRowAnimationTop];
 								} else if (_favs) {
@@ -840,10 +837,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 								[dict setObject:[NSNumber numberWithBool:_wide] forKey:@"wide"];
 								break;
 							case 2:
-								if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
-									_double = NO;
-								else
-									_double = YES;
+								_double = (cell.accessoryType == UITableViewCellAccessoryCheckmark);
 								[dict setObject:[NSNumber numberWithBool:_double] forKey:@"dbl"];
 								break;
 							default:
@@ -852,10 +846,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 					} else {
 						switch (indexPath.row) {
 							case 0:
-								if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
-									_favs = NO;
-								else
-									_favs = YES;
+								_favs = (cell.accessoryType == UITableViewCellAccessoryCheckmark);
 								if (_favs) {
 									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:1], nil] withRowAnimation:UITableViewRowAnimationTop];
 								} else {
@@ -864,10 +855,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 								[dict setObject:[NSNumber numberWithBool:_favs] forKey:@"favs"];
 								break;
 							case 1:
-								if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
-									_double = NO;
-								else
-									_double = YES;
+								_double = (cell.accessoryType == UITableViewCellAccessoryCheckmark);
 								[dict setObject:[NSNumber numberWithBool:_double] forKey:@"dbl"];
 								break;
 							default:
