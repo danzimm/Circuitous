@@ -119,13 +119,13 @@ static UIModalView *_alert = nil;
 	switch (_place) {
 		case 0:
 			if isWildcat {
-				if (!_wide && _favs) {
+				if (!_wide && _favs && !_mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,250.0f)];
-				} else if (!_wide && !_favs) {
+				} else if ((!_wide && !_favs) || (!_wide && _mega)) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,125.0f)];
-				} else if (!_dbl || !_favs) {
+				} else if (!_dbl || !_favs || _mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,125.0f)];
 				} else {
@@ -133,7 +133,7 @@ static UIModalView *_alert = nil;
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,250.0f)];
 				}
 			} else {
-				if (_favs && _dbl) {
+				if (_favs && _dbl && !_mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,175.0f)];
 				} else {
@@ -144,15 +144,15 @@ static UIModalView *_alert = nil;
 			break;
 		case 1:
 			if isWildcat {
-				if (!_wide && _favs) {
+				if (!_wide && _favs && !_mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,250.0f)];
-				} else if (!_wide && !_favs) {
+				} else if ((!_wide && !_favs) || (!_wide && _mega)) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,125.0f)];
-				} else if (!_dbl || !_favs) {
+				} else if (!_dbl || !_favs || _mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,125.0f)];
@@ -162,7 +162,7 @@ static UIModalView *_alert = nil;
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,250.0f)];
 				}
 			} else {
-				if (_favs && _dbl) {
+				if (_favs && _dbl && !_mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,175.0f)];
@@ -175,15 +175,15 @@ static UIModalView *_alert = nil;
 			break;
 		case 2:
 			if isWildcat {
-				if (!_wide && _favs) {
+				if (!_wide && _favs && !_mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,400.0f)];
-				} else if (!_wide && !_favs) {
+				} else if ((!_wide && !_favs) || (!_wide && _mega)) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,400.0f)];
-				} else if (!_dbl || !_favs) {
+				} else if (!_dbl || !_favs || _mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,768.0f)];
@@ -193,7 +193,7 @@ static UIModalView *_alert = nil;
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,768.0f)];
 				}
 			} else {
-				if (_favs && _dbl) {
+				if (_favs && _dbl && !_mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,175.0f,320.0f)];
@@ -206,15 +206,15 @@ static UIModalView *_alert = nil;
 			break;
 		case 3:
 			if isWildcat {
-				if (!_wide && _favs) {
+				if (!_wide && _favs && !_mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,400.0f)];
-				} else if (!_wide && !_favs) {
+				} else if ((!_wide && !_favs) || (!_wide && _mega)) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,400.0f)];
-				} else if (!_dbl || !_favs) {
+				} else if (!_dbl || !_favs || _mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,768.0f)];
@@ -224,7 +224,7 @@ static UIModalView *_alert = nil;
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,768.0f)];
 				}
 			} else {
-				if (_favs && _dbl) {
+				if (_favs && _dbl && !_mega) {
 					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,175.0f,320.0f)];
@@ -334,13 +334,13 @@ static UIModalView *_alert = nil;
 		if isWildcat {
 			switch (_place) {
 				case 0:
-					if ((_favs && !_wide) || (_favs && _dbl && _wide)) {
+					if (((_favs && !_wide) || (_favs && _dbl && _wide)) && !_mega) {
 						_fm.center = self.center;
 					} else {
 						_fm.center = CGPointMake(self.center.x, 125.0f-12.0f);
 					}
 				case 1:
-					if ((_favs && !_wide) || (_favs && _dbl && _wide)) {
+					if (((_favs && !_wide) || (_favs && _dbl && _wide)) && !_mega) {
 						_fm.center = self.center;
 					} else {
 						_fm.center = CGPointMake(self.center.x, 125.0f-12.0f);
