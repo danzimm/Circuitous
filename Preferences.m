@@ -819,14 +819,11 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 					if isWildcat {
 						switch (indexPath.row) {
 							case 0:
-								if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
-									_favs = NO;
-								else
-									_favs = YES;
+								_favs = ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryCheckmark);
 								if (_favs && _wide) {
-									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:1], nil] withRowAnimation:UITableViewRowAnimationTop];
 								} else if (_wide) {
-									[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+									[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:1], nil] withRowAnimation:UITableViewRowAnimationTop];
 								}
 								[dict setObject:[NSNumber numberWithBool:_favs] forKey:@"favs"];
 								break;
@@ -836,9 +833,9 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 								else
 									_wide = YES;
 								if (_favs && _wide) {
-									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:1], nil] withRowAnimation:UITableViewRowAnimationTop];
 								} else if (_favs) {
-									[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+									[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:2 inSection:1], nil] withRowAnimation:UITableViewRowAnimationTop];
 								}
 								[dict setObject:[NSNumber numberWithBool:_wide] forKey:@"wide"];
 								break;
@@ -860,9 +857,9 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 								else
 									_favs = YES;
 								if (_favs) {
-									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+									[[self _tableView] insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:1], nil] withRowAnimation:UITableViewRowAnimationTop];
 								} else {
-									[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationTop];
+									[[self _tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:1], nil] withRowAnimation:UITableViewRowAnimationTop];
 								}
 								[dict setObject:[NSNumber numberWithBool:_favs] forKey:@"favs"];
 								break;
