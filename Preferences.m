@@ -60,6 +60,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 	BOOL _wide;
 	BOOL _double;
 	BOOL _favs;
+	BOOL _mega;
 	int _transition;
 	int _quitIt;
 	int _backgroundIt;
@@ -171,9 +172,9 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 		 [_tableView setDelegate:self];
 		 _tutorial = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320, 480-64)];
 		 if isWildcat
-			 _tutorial.text = @"Welcome to Circuitous! \n\nNOTE: BACKGROUNDER MUST BE INSTALLED TO HAVE APPS RUN IN THE BACKGROUND\n\nDock Activation: Set your activator method to activate the dock with your currently running applications, and, if you choose, your favorite applications as well.\n\nCycler Activator: Cycles through your open apps.\n\nReverse Cycler: Cycles backwards through your apps.\n\nRandom Cycler: Cycles randomly through open applications.\n\nFavorite Apps: You can set your favorites by going into the favorites tab, and checking the apps that you want to appear. Make sure the favorites are enabled as well.\n\nHidden Apps:The hidden apps are kept out of the active applications, however, they can appear in the favorites if you wish. Just check off the one you wish to hide and you're good to go!\n\n\nDsiplay Options:\n\n\nFavorites:Enables or disables favorites shown.\n\nWider:This makes the entire dock wider, for more room to use the dock\n\nDouble Row:This option is only shown if both favorites and wider are enabled. This makes the dock two rows rather than one, where favorites and active apps would be half the size.\n\nTransition: The way that the dock appears and disaapears.\n\nPlace: This decides where the place of the dock is.\n\n\nSpringBoard Enabled:This adds an icon in the active apps dock to get back to the springboard, or close the springboard if you wish.\n\nApp Animations: This adds animations to launching and quitting apps, if enabled. Otherwise the apps just appear and disappear.\n\nIcon Labels: Adds labels to the icons in the dock.\n\nIcon Badges: Adds badges to icons if they have badges.\n\nClose Box: This shows or hides the little (x) to close the apps.\n\nBecome Homescreen: Whenever you go to the homescreen the dock will automatically apopear.\n\nIcon: This adds an icon to the springboard allowing you to launch the dock when tapping it. (Note this icon will do nothing when in safe mode)\n\nLockscreen: If enabled, the dock will be allowed to show on the lockscreen.\n\nDimmed Window: If enabled there will be a window behind the dock which, when tapped, will dismiss the dock. On this window you can configure gestures to do different things such as background foreground app, quit foreground app, cycle apps, or reverse cycle apps. You can also double tap on this window to get a free memory alert so that you can free up memory.\n\nFree Memory: When enabled shows the current free RAM in megabytes.\n\nOther Features: You can tap and hold an icon then drag it up or down out of the dock to quit it (when on top or bottom) or drag it left or right out of the dock (when on left or right) to quit the app. The dock supports all orientations, and will change automatically according to how you hold the device, even when the dock is active!\n\nOther Notes: If you have any questions or comments email me: Daniel.zimmerman@me.com. Other features I have planned are: Specified time to hold an icon to drag, specified time for the transitions, the dock growing even larger when the wide option is enabled and the device is turned to landscape orientation.";
+			 _tutorial.text = @"Welcome to Circuitous! \n\nNOTE: BACKGROUNDER MUST BE INSTALLED TO HAVE APPS RUN IN THE BACKGROUND\n\nDock Activation: Set your activator method to activate the dock with your currently running applications, and, if you choose, your favorite applications as well.\n\nCycler Activator: Cycles through your open apps.\n\nReverse Cycler: Cycles backwards through your apps.\n\nRandom Cycler: Cycles randomly through open applications.\n\nFavorite Apps: You can set your favorites by going into the favorites tab, and checking the apps that you want to appear. Make sure the favorites are enabled as well.\n\nHidden Apps:The hidden apps are kept out of the active applications, however, they can appear in the favorites if you wish. Just check off the one you wish to hide and you're good to go!\n\n\nDisplay Options:\n\n\nMegaDock: Enables both favorites and active apps to be in one dock\n\nFavorites:Enables or disables favorites shown.\n\nWider:This makes the entire dock wider, for more room to use the dock\n\nDouble Row:This option is only shown if both favorites and wider are enabled. This makes the dock two rows rather than one, where favorites and active apps would be half the size.\n\nTransition: The way that the dock appears and disaapears.\n\nPlace: This decides where the place of the dock is.\n\n\nSpringBoard Enabled:This adds an icon in the active apps dock to get back to the springboard, or close the springboard if you wish.\n\nSpringBoard Quittable: This enables or disables respringing with the circuitous dock.\n\nApp Animations: This adds animations to launching and quitting apps, if enabled. Otherwise the apps just appear and disappear.\n\nIcon Labels: Adds labels to the icons in the dock.\n\nIcon Badges: Adds badges to icons if they have badges.\n\nClose Box: This shows or hides the little (x) to close the apps.\n\nBecome Homescreen: Whenever you go to the homescreen the dock will automatically apopear.\n\nIcon: This adds an icon to the springboard allowing you to launch the dock when tapping it. (Note this icon will do nothing when in safe mode)\n\nLockscreen: If enabled, the dock will be allowed to show on the lockscreen.\n\nDimmed Window: If enabled there will be a window behind the dock which, when tapped, will dismiss the dock. On this window you can configure gestures to do different things such as background foreground app, quit foreground app, cycle apps, or reverse cycle apps. You can also double tap on this window to get a free memory alert so that you can free up memory.\n\nFree Memory: When enabled shows the current free RAM in megabytes. You can free up memory by double tapping on the dimmed window.\n\nBackgrounder Badge: Shows the backgrounder badge on the currently backgrounded/active applications(Useful if you have megadock on).\n\nOther Features: You can tap and hold an icon then drag it up or down out of the dock to quit it (when on top or bottom) or drag it left or right out of the dock (when on left or right) to quit the app. The dock supports all orientations, and will change automatically according to how you hold the device, even when the dock is active!\n\nOther Notes: If you have any questions or comments email me: Daniel.zimmerman@me.com. Other features I have planned are: Specified time to hold an icon to drag, specified time for the transitions, the dock growing even larger when the wide option is enabled and the device is turned to landscape orientation.";
 		 else
-			 _tutorial.text = @"Welcome to Circuitous! \n\nNOTE: BACKGROUNDER MUST BE INSTALLED TO HAVE APPS RUN IN THE BACKGROUND\n\nDock Activation: Set your activator method to activate the dock with your currently running applications, and, if you choose, your favorite applications as well.\n\nCycler Activator: Cycles through your open apps.\n\nReverse Cycler: Cycles backwards through your apps.\n\nRandom Cycler: Cycles randomly through open applications.\n\nFavorite Apps: You can set your favorites by going into the favorites tab, and checking the apps that you want to appear. Make sure the favorites are enabled as well.\n\nHidden Apps:The hidden apps are kept out of the active applications, however, they can appear in the favorites if you wish. Just check off the one you wish to hide and you're good to go!\n\n\nDsiplay Options:\n\n\nFavorites:Enables or disables favorites shown.\n\nDouble Row:This option is only shown if both favorites and wider are enabled. This makes the dock two rows rather than one, where favorites and active apps would be half the size.\n\nTransition:The way that the dock appears and disaapears.\n\nPlace: This decides where the place of the dock is.\n\n\nSpringBoard Enabled:This adds an icon in the active apps dock to get back to the springboard, or close the springboard if you wish.\n\nApp Animations: This adds animations to launching and quitting apps, if enabled. Otherwise the apps just appear and disappear.\n\nIcon Labels: Adds labels to the icons in the dock.\n\nIcon Badges: Adds badges to icons if they have badges.\n\nClose Box: This shows or hides the little (x) to close the apps.\n\nBecome Homescreen: Whenever you go to the homescreen the dock will automatically apopear.\n\nIcon: This adds an icon to the springboard allowing you to launch the dock when tapping it. (Note this icon will do nothing when in safe mode)\n\nLockscreen: If enabled, the dock will be allowed to show on the lockscreen.\n\Dimmed Window: If enabled there will be a window behind the dock which, when tapped, will dismiss the dock. On this window you can configure gestures to do different things such as background foreground app, quit foreground app, cycle apps, or reverse cycle apps. You can also double tap on this window to get a free memory alert so that you can free up memory.\n\nFree Memory: When enabled shows the current free RAM in megabytes. You can free up memory by double tapping on the dimmed window.\n\nOther Features: You can tap and hold an icon then drag it up or down out of the dock to quit it (when on top or bottom) or drag it left or right out of the dock (when on left or right) to quit the app. The dock supports all orientations, and will change automatically according to how you hold the device, even when the dock is active!\n\nOther Notes: If you have any questions or comments email me: Daniel.zimmerman@me.com. Other features I have planned are: Specified time to hold an icon to drag, specified time for the transitions, the dock growing even larger when the wide option is enabled and the device is turned to landscape orientation.";
+			 _tutorial.text = @"Welcome to Circuitous! \n\nNOTE: BACKGROUNDER MUST BE INSTALLED TO HAVE APPS RUN IN THE BACKGROUND\n\nDock Activation: Set your activator method to activate the dock with your currently running applications, and, if you choose, your favorite applications as well.\n\nCycler Activator: Cycles through your open apps.\n\nReverse Cycler: Cycles backwards through your apps.\n\nRandom Cycler: Cycles randomly through open applications.\n\nFavorite Apps: You can set your favorites by going into the favorites tab, and checking the apps that you want to appear. Make sure the favorites are enabled as well.\n\nHidden Apps:The hidden apps are kept out of the active applications, however, they can appear in the favorites if you wish. Just check off the one you wish to hide and you're good to go!\n\n\nDisplay Options:\n\n\nMegaDock: Enables both favorites and active apps to be in one dock\n\nFavorites:Enables or disables favorites shown.\n\nDouble Row:This option is only shown if both favorites and wider are enabled. This makes the dock two rows rather than one, where favorites and active apps would be half the size.\n\nTransition:The way that the dock appears and disaapears.\n\nPlace: This decides where the place of the dock is.\n\n\nSpringBoard Enabled:This adds an icon in the active apps dock to get back to the springboard, or close the springboard if you wish.\n\nSpringBoard Quittable: This enables or disables respringing with the circuitous dock.\n\nApp Animations: This adds animations to launching and quitting apps, if enabled. Otherwise the apps just appear and disappear.\n\nIcon Labels: Adds labels to the icons in the dock.\n\nIcon Badges: Adds badges to icons if they have badges.\n\nClose Box: This shows or hides the little (x) to close the apps.\n\nBecome Homescreen: Whenever you go to the homescreen the dock will automatically apopear.\n\nIcon: This adds an icon to the springboard allowing you to launch the dock when tapping it. (Note this icon will do nothing when in safe mode)\n\nLockscreen: If enabled, the dock will be allowed to show on the lockscreen.\n\nDimmed Window: If enabled there will be a window behind the dock which, when tapped, will dismiss the dock. On this window you can configure gestures to do different things such as background foreground app, quit foreground app, cycle apps, or reverse cycle apps. You can also double tap on this window to get a free memory alert so that you can free up memory.\n\nFree Memory: When enabled shows the current free RAM in megabytes. You can free up memory by double tapping on the dimmed window.\n\nBackgrounder Badge: Shows the backgrounder badge on the currently backgrounded/active applications(Useful if you have megadock on).\n\nOther Features: You can tap and hold an icon then drag it up or down out of the dock to quit it (when on top or bottom) or drag it left or right out of the dock (when on left or right) to quit the app. The dock supports all orientations, and will change automatically according to how you hold the device, even when the dock is active!\n\nOther Notes: If you have any questions or comments email me: Daniel.zimmerman@me.com. Other features I have planned are: Specified time to hold an icon to drag, specified time for the transitions, the dock growing even larger when the wide option is enabled and the device is turned to landscape orientation.";
 		 _tutorial.font = [UIFont systemFontOfSize:16.0f];
 		 _tutorial.editable = NO;
 	 }
@@ -215,6 +216,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 			_favs = [dict objectForKey:@"favs"] ? [[dict objectForKey:@"favs"] boolValue] : YES;
 			_wide = [dict objectForKey:@"wide"] ? [[dict objectForKey:@"wide"] boolValue] : NO;
 			_double = [dict objectForKey:@"dbl"] ? [[dict objectForKey:@"dbl"] boolValue] : YES;
+			_mega = [dict objectForKey:@"mega"] ? [[dict objectForKey:@"mega"] boolValue] : NO;
 			_transition = [dict objectForKey:@"trans"] ? [[dict objectForKey:@"trans"] intValue] : 0;
 			_place = [dict objectForKey:@"place"] ? [[dict objectForKey:@"place"] intValue] : 0;
 			break;
@@ -314,7 +316,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 			return 2;
 			break;
 		case 3:
-			return 3;
+			return 4;
 			break;
 		case 4:
 			return 4;
@@ -428,6 +430,9 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 		case 3:
 			switch (section) {
 				case 0:
+					return 1;
+					break;
+				case 1:
 					if isWildcat {
 						if (_favs && _wide)
 							return 3;
@@ -440,10 +445,10 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 							return 1;
 					}
 					break;
-				case 1:
+				case 2:
 					return 3;
 					break;
-				case 2:
+				case 3:
 					return 4;
 					break;
 				default:
@@ -535,6 +540,13 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 			identifier = nil;
 			switch (indexPath.section) {
 				case 0:
+					cell.textLabel.text = @"MegaDock";
+					if (_mega)
+						cell.accessoryType = UITableViewCellAccessoryCheckmark;
+					else
+						cell.accessoryType = UITableViewCellAccessoryNone;
+					break;
+				case 1:
 					if isWildcat {
 						switch (indexPath.row) {
 							case 0:
@@ -582,7 +594,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 						}
 					}
 					break;
-				case 1:
+				case 2:
 					switch (indexPath.row) {
 						case 0:
 							cell.textLabel.text = @"Fade In";
@@ -599,7 +611,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 					if ((int)indexPath.row == _transition)
 						cell.accessoryType = UITableViewCellAccessoryCheckmark;
 					break;
-				case 2:
+				case 3:
 					switch (indexPath.row) {
 						case 0:
 							cell.textLabel.text = @"Top";
@@ -783,7 +795,15 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 		case 3:
 			identifier = nil;
 			switch (indexPath.section) {
-				case 1:
+				case 0:
+					if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
+						cell.accessoryType = UITableViewCellAccessoryCheckmark;
+					else
+						cell.accessoryType = UITableViewCellAccessoryNone;
+					_mega = (cell.accessoryType == UITableViewCellAccessoryCheckmark);
+					[dict setObject:[NSNumber numberWithBool:_mega] forKey:@"mega"];
+					break;
+				case 2:
 					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
 					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
 					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]] setAccessoryType:UITableViewCellAccessoryNone];
@@ -791,7 +811,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 					_transition = indexPath.row;
 					[dict setObject:[NSNumber numberWithInt:_transition] forKey:@"trans"];
 					break;
-				case 0:
+				case 1:
 					if ((UITableViewCellAccessoryType *)cell.accessoryType == UITableViewCellAccessoryNone)
 						cell.accessoryType = UITableViewCellAccessoryCheckmark;
 					else
@@ -858,7 +878,7 @@ extern NSString * SBSCopyIconImagePathForDisplayIdentifier(NSString *identifier)
 						}
 					}
 					break;
-				case 2:
+				case 3:
 					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
 					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];
 					[[[self _tableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]] setAccessoryType:UITableViewCellAccessoryNone];

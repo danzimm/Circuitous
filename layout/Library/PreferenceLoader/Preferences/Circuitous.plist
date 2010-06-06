@@ -143,6 +143,20 @@
 			<key>defaults</key>
 			<string>com.zimm.circuitous</string>
 			<key>key</key>
+			<string>springboardquit</string>
+			<key>label</key>
+			<string>SpringBoard Quittable</string>
+			<key>PostNotification</key>
+			<string>com.zimm.circuitous.settingschanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.zimm.circuitous</string>
+			<key>key</key>
 			<string>appanimations</string>
 			<key>label</key>
 			<string>App Animations</string>
@@ -263,6 +277,20 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.zimm.circuitous</string>
+			<key>key</key>
+			<string>backgrounderbadge</string>
+			<key>label</key>
+			<string>Backgrounder Badge</string>
+			<key>PostNotification</key>
+			<string>com.zimm.circuitous.settingschanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
 			<string>Tutorial</string>
@@ -272,6 +300,32 @@
 			<string>CIRPrefs</string>
 			<key>use</key>
 			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Icon Hold Time</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>showValue</key>
+			<true/>
+			<key>default</key>
+			<real>0.5</real>
+			<key>max</key>
+			<integer>1</integer>
+			<key>min</key>
+			<string>0.0</string>
+			<key>defaults</key>
+			<string>com.zimm.circuitous</string>
+			<key>key</key>
+			<string>holdtime</string>
+			<key>label</key>
+			<string>Hold Time</string>
+			<key>PostNotification</key>
+			<string>com.zimm.circuitous.settingschanged</string>
 		</dict>
 		<dict>
 			<key>cell</key>

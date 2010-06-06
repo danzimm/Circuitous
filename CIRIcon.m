@@ -60,7 +60,7 @@ static BOOL horiz = NO;
 				_iconImage = [[UIImageView alloc] initWithImage:image];
 			}
 		}
-		_iconImage.frame = CGRectMake(0.0f, 7.5f, _iconImage.frame.size.width, _iconImage.frame.size.height);
+		_iconImage.frame = CGRectMake(0.0f, 7.5f, 74.0f, 78.0f);
 		[self addSubview:_iconImage];
 		if (label) {
 			_iconName = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 80.0f, 74.0f, 20.0f)];
@@ -79,6 +79,7 @@ static BOOL horiz = NO;
 		} else
 			_badge = nil;
 		_iconClose = nil;
+		_bgBadge = nil;
 		return orig;
 	} else {
 		id orig = [super initWithFrame:CGRectMake(coor, 5.0f, 60.0f, 77.0f)];
@@ -102,7 +103,7 @@ static BOOL horiz = NO;
 				_iconImage = [[UIImageView alloc] initWithImage:image];
 			}
 		}
-		_iconImage.frame = CGRectMake(0.0f, 5.0f, _iconImage.frame.size.width, _iconImage.frame.size.height);
+		_iconImage.frame = CGRectMake(0.0f, 5.0f, 57.0f, 57.0f);
 		[self addSubview:_iconImage];
 		if (label) {
 			_iconName = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 60.0f, self.frame.size.width, 12.0f)];
@@ -121,6 +122,7 @@ static BOOL horiz = NO;
 		} else
 			_badge = nil;
 		_iconClose = nil;
+		_bgBadge = nil;
 		return orig;
 	}
 }
@@ -151,7 +153,7 @@ static BOOL horiz = NO;
 				_iconImage = [[UIImageView alloc] initWithImage:image];
 			}
 		}
-		_iconImage.frame = CGRectMake(0.0f, 7.5f, _iconImage.frame.size.width, _iconImage.frame.size.height);
+		_iconImage.frame = CGRectMake(0.0f, 7.5f, 74.0f, 78.0f);
 		[self addSubview:_iconImage];
 		if (label) {
 			_iconName = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 80.0f, 74.0f, 20.0f)];
@@ -170,6 +172,7 @@ static BOOL horiz = NO;
 		} else
 			_badge = nil;
 		_iconClose = nil;
+		_bgBadge = nil;
 		return orig;
 	} else {
 		id orig = [super initWithFrame:CGRectMake(7.5f, coor, 60.0f, 77.0f)];
@@ -193,7 +196,7 @@ static BOOL horiz = NO;
 				_iconImage = [[UIImageView alloc] initWithImage:image];
 			}
 		}
-		_iconImage.frame = CGRectMake(0.0f, 5.0f, _iconImage.frame.size.width, _iconImage.frame.size.height);
+		_iconImage.frame = CGRectMake(0.0f, 5.0f, 57.0f, 57.0f);
 		[self addSubview:_iconImage];
 		if (label) {
 			_iconName = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 60.0f, self.frame.size.width, 12.0f)];
@@ -212,6 +215,7 @@ static BOOL horiz = NO;
 		} else
 			_badge = nil;
 		_iconClose = nil;
+		_bgBadge = nil;
 		return orig;
 	}
 }
@@ -236,6 +240,16 @@ static BOOL horiz = NO;
 - (void)setActiveWithoutBox
 {
 	_iconClose = [[CIRCloseView alloc] initWithIdentifier:_identifier animations:_animate];
+}
+
+- (void)setBackgrounderBadge
+{
+	UIImage *image = [UIImage imageWithContentsOfFile:@"/Applications/Backgrounder.app/badge.png"];
+	if (image) {
+		_bgBadge = [[UIImageView alloc] initWithImage:image];
+		_bgBadge.center = CGPointMake(CGRectGetMaxX(_iconImage.frame) - 5.0f, CGRectGetMaxY(_iconImage.frame) - 5.0f);
+		[self addSubview:_bgBadge];
+	}
 }
 
 - (NSString *)identifier

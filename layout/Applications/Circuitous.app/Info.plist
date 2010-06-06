@@ -14,8 +14,8 @@
 	<string>6.0</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>icon-phone.png</string>
-		<string>Icon.png</string>
+		<string>icon.png</string>
+		<string>icon-ipad.png</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>Circuitous</string>

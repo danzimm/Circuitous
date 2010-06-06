@@ -31,7 +31,7 @@ static BOOL _busy = NO;
 %class SBAwayController;
 %class SBIconModel;
 
-
+/*
 static BOOL setIconHiding()
 {
     // Open the libhide helper library.
@@ -62,7 +62,7 @@ static BOOL setIconHiding()
     }
     return Changed;
 }
-
+*/
 static void UpdatePreferences() {
 	if (_uninstalled)
 		return;
@@ -71,10 +71,8 @@ static void UpdatePreferences() {
 	_onLock = [prefs objectForKey:@"onlock"] ? [[prefs objectForKey:@"onlock"] boolValue] : YES;
 	_animations = [prefs objectForKey:@"appanimations"] ? [[prefs objectForKey:@"appanimations"] boolValue] : YES;
 	_hasIcon = [prefs objectForKey:@"icon"] ? [[prefs objectForKey:@"icon"] boolValue] : YES;
-	if (setIconHiding() == NO)
-		NSLog(@"Icon visibility hasn't changed");
-	else
-		NSLog(@"Changed Icon visibility");
+//	[[[$SBIconModel sharedInstance] iconForDisplayIdentifier:@"com.zimm.circuitous"] setIsHidden:!_hasIcon animated:YES];
+	[[$SBIconModel sharedInstance] relayout];
 	[prefs release];
 }
 
@@ -272,6 +270,8 @@ static void UpdatePreferences() {
 - (void)showCircuitous
 {
 	if (sharedLauncher || _uninstalled || _busy) {
+		if (_busy)
+			NSLog(@"Returning from showing cuz busy");
 		return;
 	}
 	_busy = YES;
@@ -392,7 +392,15 @@ static void UpdatePreferences() {
 -(void)unscatterAnimationDidStop
 {
 	%orig;
-	if (_becomeHomeScreen) {
+	if (_becomeHomeScreen && ![[$SBAwayController sharedAwayController] isLocked]) {
+		[(SpringBoard *)[UIApplication sharedApplication] showCircuitous];
+	}
+}
+
+-(void)unscatter:(BOOL)unscatter startTime:(double)time
+{
+	%orig;
+	if (_becomeHomeScreen && ![[$SBAwayController sharedAwayController] isLocked]) {
 		[(SpringBoard *)[UIApplication sharedApplication] showCircuitous];
 	}
 }
@@ -447,11 +455,11 @@ static void UpdatePreferences() {
 {
 	%orig;
 	NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"]?:[[NSMutableDictionary alloc] init];
-	if (![prefs objectForKey:@"2.0"]) {
-		[prefs setObject:@"OK" forKey:@"2.0"];
+	if (![prefs objectForKey:@"2.1"]) {
+		[prefs setObject:@"OK" forKey:@"2.1"];
 		[prefs writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
-		UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Welcome to Circuitous 2.0" buttons:[NSArray arrayWithObjects:@"Settings", @"Later", nil] defaultButtonIndex:0 delegate:self context:NULL];
-		[alert setBodyText:@"You should go configure your settings in the settings app before continuing. Remember to read the tutorial at the bottom. I actually suggest doing this first!"];
+		UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Welcome to Circuitous 2.1" buttons:[NSArray arrayWithObjects:@"Settings", @"Later", nil] defaultButtonIndex:0 delegate:self context:NULL];
+		[alert setBodyText:@"You should go reconfigure, or configure for the first time your settings! They have changed wsince the last update."];
 		[alert setNumberOfRows:1];
 		[alert popupAlertAnimated:YES];
 		[alert release];

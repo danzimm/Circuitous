@@ -31,13 +31,12 @@ static NSMutableArray *_activeApps = nil;
 		NSArray *apps1 = [[DSDisplayController sharedInstance] activeApps];
 		_activeApps = [[NSMutableArray alloc] initWithArray:apps1];
 		[apps1 release];
-		for (NSString *app in apps) {
-			if (![_activeApps containsObject:app])
-				[_activeApps addObject:app];
-		}
+		if ([prefs objectForKey:@"springboardquit"] ? [[prefs objectForKey:@"springboardquit"] boolValue] : YES)
+			[_activeApps addObject:@"com.apple.springboard"];
 	}
 	holdTime = [prefs objectForKey:@"holdtime"] ? [[prefs objectForKey:@"holdtime"] floatValue] : 0.5f;
 	BOOL closeBox = [prefs objectForKey:@"close"] ? [[prefs objectForKey:@"close"] boolValue] : YES;
+	BOOL backgrounderBadge = [prefs objectForKey:@"backgrounderbadge"] ? [[prefs objectForKey:@"backgrounderbadge"] boolValue] : YES;
 	appSet = [[NSArray alloc] initWithArray:apps];
 	float width = 11.0f;
 	int place = -1;
@@ -50,6 +49,8 @@ static NSMutableArray *_activeApps = nil;
 			[icon setActive];
 		else if ([_activeApps containsObject:app])
 			[icon setActiveWithoutBox];
+		if (backgrounderBadge && [_activeApps containsObject:app])
+			[icon setBackgrounderBadge];
 		[self addSubview:icon];
 	}
 	[prefs release];
@@ -80,13 +81,12 @@ static NSMutableArray *_activeApps = nil;
 		NSArray *apps1 = [[DSDisplayController sharedInstance] activeApps];
 		_activeApps = [[NSMutableArray alloc] initWithArray:apps1];
 		[apps1 release];
-		for (NSString *app in apps) {
-			if (![_activeApps containsObject:app])
-				[_activeApps addObject:app];
-		}
+		if ([prefs objectForKey:@"springboardquit"] ? [[prefs objectForKey:@"springboardquit"] boolValue] : YES)
+			[_activeApps addObject:@"com.apple.springboard"];
 	}
 	holdTime = [prefs objectForKey:@"holdtime"] ? [[prefs objectForKey:@"holdtime"] floatValue] : 0.5f;
 	BOOL closeBox = [prefs objectForKey:@"close"] ? [[prefs objectForKey:@"close"] boolValue] : YES;
+	BOOL backgrounderBadge = [prefs objectForKey:@"backgrounderbadge"] ? [[prefs objectForKey:@"backgrounderbadge"] boolValue] : YES;
 	appSet = [[NSArray alloc] initWithArray:apps];
 	float width = 11.0f;
 	int place = -1;
@@ -99,6 +99,8 @@ static NSMutableArray *_activeApps = nil;
 			[icon setActive];
 		else if ([_activeApps containsObject:app])
 			[icon setActiveWithoutBox];
+		if (backgrounderBadge && [_activeApps containsObject:app])
+			[icon setBackgrounderBadge];
 		[self addSubview:icon];
 	}
 	[prefs release];
