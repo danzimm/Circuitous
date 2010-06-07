@@ -81,6 +81,9 @@ static void UpdatePreferences() {
 - (void)hideCircuitous;
 - (void)cycleAppsWithPlace:(int)place;
 @end
+@interface SBApplicationIcon (Circuitous)
+-(void)modalView:(id)view didDismissWithButtonIndex:(int)buttonIndex;
+@end
 
 @interface UIDevice (iPad)
 - (BOOL)isWildcat;
@@ -429,8 +432,8 @@ static void UpdatePreferences() {
 	%orig;
 	_uninstalled = YES;
 	[(SpringBoard *)[UIApplication sharedApplication] hideCircuitous];
-}
-/*
+
+
 	UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Circuitous Uninstalled" buttons:[NSArray arrayWithObjects:@"Respring", @"Later", nil] defaultButtonIndex:0 delegate:self context:NULL];
 	[alert setBodyText:@"The SpringBoard needs to respring, do you want to do it now or later?"];
 	[alert setNumberOfRows:1];
@@ -438,7 +441,6 @@ static void UpdatePreferences() {
 	[alert release];
 }
 
-%new(v@:@i)
 -(void)modalView:(id)view didDismissWithButtonIndex:(int)buttonIndex
 {
 	UIModalView *view1 = (UIModalView *)view;
@@ -453,7 +455,7 @@ static void UpdatePreferences() {
 	} else
 		%orig;
 }
-*/
+
 
 %end
 
