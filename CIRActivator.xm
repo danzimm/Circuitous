@@ -426,8 +426,11 @@ static void UpdatePreferences() {
 
 - (void)completeUninstall
 {
+	%orig;
 	_uninstalled = YES;
 	[(SpringBoard *)[UIApplication sharedApplication] hideCircuitous];
+}
+/*
 	UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Circuitous Uninstalled" buttons:[NSArray arrayWithObjects:@"Respring", @"Later", nil] defaultButtonIndex:0 delegate:self context:NULL];
 	[alert setBodyText:@"The SpringBoard needs to respring, do you want to do it now or later?"];
 	[alert setNumberOfRows:1];
@@ -438,14 +441,19 @@ static void UpdatePreferences() {
 %new(v@:@i)
 -(void)modalView:(id)view didDismissWithButtonIndex:(int)buttonIndex
 {
-	switch (buttonIndex) {
-		case 0:
-			[(SpringBoard *)[UIApplication sharedApplication] relaunchSpringBoard];
-			break;
-		default:
-			break;
-	}
+	UIModalView *view1 = (UIModalView *)view;
+	if ([view1.title isEqualToString:@"Circuitous Uninstalled"]) {
+		switch (buttonIndex) {
+			case 0:
+				[(SpringBoard *)[UIApplication sharedApplication] relaunchSpringBoard];
+				break;
+			default:
+				break;
+		}
+	} else
+		%orig;
 }
+*/
 
 %end
 
