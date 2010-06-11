@@ -1,7 +1,7 @@
 Package: com.zimm.circuitous
 Name: Circuitous
 Depends:libactivator , com.zimm.libdisplaystack, mobilesubstrate
-Version: 2.1
+Version: 2.2
 Architecture: iphoneos-arm
 Description: Multitasking App Launcher Beta Build
 Maintainer: dan zimmerman
