@@ -9,13 +9,13 @@
 #import "UIModalViewDelegate.h"
 #import "UIModalView.h"
 @class UIImageView;
-@class CIRScrollView;
+@class CIRScrollViewHandler;
 @class UIView;
 @interface CIRLauncherView : UIWindow<UIModalViewDelegate>
 {
 	UIImageView *_backgroundView;
-	CIRScrollView *_activeAppsScrollView;
-	CIRScrollView *_favoriteAppsScrollView;
+	CIRScrollViewHandler *_activeAppsScrollView;
+	CIRScrollViewHandler *_favoriteAppsScrollView;
 	UILabel *_fm;
 	NSTimer *_fmTimer;
 	UIWindow *_bg;

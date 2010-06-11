@@ -18,9 +18,9 @@
 {
 	id orig;
 	if isWildcat {
-		orig = [super initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/closebox-ipad.png"]];
+		orig = [super initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/closebox-ipad.png"]]];
 	} else {
-		orig = [super initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/closebox-iphone.png"]];
+		orig = [super initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/closebox-iphone.png"]]];
 	}
 	_animate = animate;
 	self.userInteractionEnabled = YES;

@@ -19,11 +19,13 @@
 	UIImageView *_bgBadge;
 }
 
-- (id)initWithIdentifier:(NSString *)ident andXCoor:(int)coor animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge holdTime:(float)time themedIcon:(BOOL)icon;
-- (id)initWithIdentifier:(NSString *)ident andYCoor:(int)coor animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge holdTime:(float)time themedIcon:(BOOL)icon;
++ (void)setHoriz:(BOOL)horiz1;
+- (id)initWithIdentifier:(NSString *)ident andFrame:(CGRect)frame labelHeight:(float)height animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge holdTime:(float)time themedIcon:(BOOL)icon;
 - (void)setActive;
 - (NSString *)identifier;
 - (void)setActiveWithoutBox;
 - (void)setBackgrounderBadge;
+- (void)removeBackgrounderBadge;
+- (void)removeIsActive;
 
 @end

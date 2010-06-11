@@ -1,12 +1,13 @@
 TWEAK_NAME = Circuitous
 
+Circuitous_OBJCC_FILES = CIRActivator.mm
 Circuitous_OBJC_FILES = CIRCloseView.m \
 	CIRLauncherView.m \
 	CIRScrollView.m \
 	CIRBackgroundWindow.m \
 	CIRLauncherHandler.m \
-	CIRIcon.m
-Circuitous_OBJCC_FILES = CIRActivator.mm
+	CIRIcon.m \
+	CIRScrollViewHandler.m
 Circuitous_FRAMEWORKS = UIKit Foundation CoreFoundation CoreGraphics
 Circuitous_PRIVATE_FRAMEWORKS = SpringBoardServices
 Circuitous_LDFLAGS = -L/Users/Dan/Desktop/libdisplaystack/obj -ldisplaystack -lactivator 

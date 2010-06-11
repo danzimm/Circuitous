@@ -3,7 +3,7 @@
 #import <SpringBoard/SpringBoard.h>
 
 #import "CIRLauncherView.h"
-#import "CIRScrollView.h"
+#import "CIRScrollViewHandler.h"
 
 #import "UIModalView.h"
 
@@ -120,24 +120,24 @@ static UIModalView *_alert = nil;
 		case 0:
 			if isWildcat {
 				if (!_wide && _favs && !_mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad.png"]]];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,250.0f)];
 				} else if ((!_wide && !_favs) || (!_wide && _mega)) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-slim.png"]]];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,125.0f)];
 				} else if (!_dbl || !_favs || _mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]]];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,125.0f)];
 				} else {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-wide.png"]]];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,250.0f)];
 				}
 			} else {
 				if (_favs && _dbl && !_mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-iphone.png"]]];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,175.0f)];
 				} else {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-iphone-slim.png"]]];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,90.0f)];
 				}
 			}
@@ -145,29 +145,29 @@ static UIModalView *_alert = nil;
 		case 1:
 			if isWildcat {
 				if (!_wide && _favs && !_mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,250.0f)];
 				} else if ((!_wide && !_favs) || (!_wide && _mega)) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-slim.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,400.0f,125.0f)];
 				} else if (!_dbl || !_favs || _mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,125.0f)];
 				} else {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-wide.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,768.0f,250.0f)];
 				}
 			} else {
 				if (_favs && _dbl && !_mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-iphone.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,175.0f)];
 				} else {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-iphone-slim.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation(M_PI)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,320.0f,90.0f)];
 				}
@@ -176,29 +176,29 @@ static UIModalView *_alert = nil;
 		case 2:
 			if isWildcat {
 				if (!_wide && _favs && !_mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,400.0f)];
 				} else if ((!_wide && !_favs) || (!_wide && _mega)) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-slim.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,400.0f)];
 				} else if (!_dbl || !_favs || _mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,768.0f)];
 				} else {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-wide.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,768.0f)];
 				}
 			} else {
 				if (_favs && _dbl && !_mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-iphone.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,175.0f,320.0f)];
 				} else {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-iphone-slim.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*-90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,90.0f,320.0f)];
 				}
@@ -207,29 +207,29 @@ static UIModalView *_alert = nil;
 		case 3:
 			if isWildcat {
 				if (!_wide && _favs && !_mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,400.0f)];
 				} else if ((!_wide && !_favs) || (!_wide && _mega)) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-slim.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,400.0f)];
 				} else if (!_dbl || !_favs || _mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-wide-slim.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,125.0f,768.0f)];
 				} else {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-ipad-wide.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-ipad-wide.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,250.0f,768.0f)];
 				}
 			} else {
 				if (_favs && _dbl && !_mega) {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-iphone.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,175.0f,320.0f)];
 				} else {
-					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/background-iphone-slim.png"]];
+					_backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/background-iphone-slim.png"]]];
 					[_backgroundView setTransform:CGAffineTransformMakeRotation((M_PI/180)*90)];
 					orig = [super initWithFrame:CGRectMake(0.0f,0.0f,90.0f,320.0f)];
 				}
@@ -265,68 +265,68 @@ static UIModalView *_alert = nil;
 	if (_place == 0 || _place == 1) {
 		if isWildcat {
 			if (!_wide)
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,380.0f,115.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(10.0f,5.0f,380.0f,115.0f) apps:apps active:YES];
 			else if (!_favs || (_dbl && _favs) || (_mega && _favs))
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f,115.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f,115.0f) apps:apps active:YES];
 			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
 		} else {
 			if (_favs && !_dbl && !(_favs && _mega))
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,155.0f,80.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(5.0f,5.0f,155.0f,80.0f) apps:apps active:YES];
 			else {
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
-				_activeAppsScrollView.center = CGPointMake(CGRectGetMidX(self.frame), _activeAppsScrollView.center.y);
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
+				[_activeAppsScrollView view].center = CGPointMake(CGRectGetMidX(self.frame), [_activeAppsScrollView view].center.y);
 			}
 		}
 	} else {
 		if isWildcat {
 			if (!_wide)
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,380.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,380.0f) apps:apps active:YES];
 			else if (!_favs || (_dbl && _favs) || (_favs && _mega))
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f) apps:apps active:YES];
 			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f/2 - 5.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f/2 - 5.0f) apps:apps active:YES];
 		} else {
 			if (_favs && !_dbl && !(_favs && _mega))
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,155.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,155.0f) apps:apps active:YES];
 			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,310.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,310.0f) apps:apps active:YES];
 		}
 	}
-	[self addSubview:_activeAppsScrollView];
+	[self addSubview:[_activeAppsScrollView view]];
 	if (_favs && !_mega) {
 		if (_place == 0 || _place == 1) {
 			if isWildcat {
 				if (!_wide)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f, 130.0f, 380.0f, 115.0f) apps:apps2 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(10.0f, 130.0f, 380.0f, 115.0f) apps:apps2 active:NO];
 				else if (_dbl)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,130.0f,748.0f,115.0f) apps:apps2 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(10.0f,130.0f,748.0f,115.0f) apps:apps2 active:NO];
 				else
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(748.0f/2 + 5.0f, 5.0f, 748.0f/2 - 5.0f, 115.0f) apps:apps2 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(748.0f/2 + 5.0f, 5.0f, 748.0f/2 - 5.0f, 115.0f) apps:apps2 active:NO];
 				
 			} else {
 				if (!_dbl)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(155.0f, 5.0f, 155.0f, 80.0f) apps:apps2 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(155.0f, 5.0f, 155.0f, 80.0f) apps:apps2 active:NO];
 				else
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f, 90.0f, 310.0f, 80.0f) apps:apps2 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(5.0f, 90.0f, 310.0f, 80.0f) apps:apps2 active:NO];
 			}
 		} else {
 			if isWildcat {
 				if (!_wide)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(130.0f, 10.0f, 115.0f, 380.0f) apps:apps2 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(130.0f, 10.0f, 115.0f, 380.0f) apps:apps2 active:NO];
 				else if (_dbl)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(130.0f,10.0f,115.0f,748.0f) apps:apps2 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(130.0f,10.0f,115.0f,748.0f) apps:apps2 active:NO];
 				else
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f, 748.0f/2 + 5.0f, 115.0f,748.0f/2 - 5.0f) apps:apps2 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f, 748.0f/2 + 5.0f, 115.0f,748.0f/2 - 5.0f) apps:apps2 active:NO];
 				
 			} else {
 				if (!_dbl)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f, 155.0f, 80.0f, 155.0f) apps:apps2 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f, 155.0f, 80.0f, 155.0f) apps:apps2 active:NO];
 				else
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(90.0f, 5.0f, 80.0f, 310.0f) apps:apps2 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(90.0f, 5.0f, 80.0f, 310.0f) apps:apps2 active:NO];
 			}
 		}
-		[self addSubview:_favoriteAppsScrollView];
+		[self addSubview:[_favoriteAppsScrollView view]];
 	}
 	if (_freememory) {
 		_fmTimer = [NSTimer scheduledTimerWithTimeInterval:1/1 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
@@ -520,85 +520,85 @@ static UIModalView *_alert = nil;
 	[prefs release];
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.25f];
-	_activeAppsScrollView.alpha = 0.0f;
-	[_activeAppsScrollView removeFromSuperview];
+	[_activeAppsScrollView view].alpha = 0.0f;
+	[[_activeAppsScrollView view] removeFromSuperview];
 	[_activeAppsScrollView release];
 	_activeAppsScrollView = nil;
+	NSArray *tmp1 = [[NSArray alloc] initWithArray:[_favoriteAppsScrollView apps]];
 	if (_favs) {
-		[_favoriteAppsScrollView removeFromSuperview];
+		[[_favoriteAppsScrollView view] removeFromSuperview];
 		[_favoriteAppsScrollView release];
 		_favoriteAppsScrollView = nil;
 	}
 	if (_place == 0 || _place == 1) {
 		if isWildcat {
 			if (!_wide)
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,380.0f,115.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(10.0f,5.0f,380.0f,115.0f) apps:apps active:YES];
 			else if (!_favs || (_dbl && _favs) || (_favs && _mega))
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f,115.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f,115.0f) apps:apps active:YES];
 			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(10.0f,5.0f,748.0f/2 - 5.0f,115.0f) apps:apps active:YES];
 		} else {
 			if (_favs && !_dbl && !(_favs && _mega))
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,155.0f,80.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(5.0f,5.0f,155.0f,80.0f) apps:apps active:YES];
 			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(5.0f,5.0f,310.0f,80.0f) apps:apps active:YES];
 		}
 	} else {
 		if isWildcat {
 			if (!_wide)
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,380.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,380.0f) apps:apps active:YES];
 			else if (!_favs || (_dbl && _favs) || (_favs && _mega))
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f) apps:apps active:YES];
 			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f/2 - 5.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f,10.0f,115.0f,748.0f/2 - 5.0f) apps:apps active:YES];
 		} else {
 			if (_favs && !_dbl && !(_favs && _mega))
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,155.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,155.0f) apps:apps active:YES];
 			else
-				_activeAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,310.0f) apps:apps active:YES];
+				_activeAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f,5.0f,80.0f,310.0f) apps:apps active:YES];
 		}
 	}
-	_activeAppsScrollView.alpha = 0.0f;
+	[_activeAppsScrollView view].alpha = 0.0f;
 	if (_favs && !_mega) {
-		NSArray *tmp1 = [[NSArray alloc] initWithArray:[_favoriteAppsScrollView appSet]];
 		if (_place == 0 || _place == 1) {
 			if isWildcat {
 				if (!_wide)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f, 130.0f, 380.0f, 115.0f) apps:tmp1 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(10.0f, 130.0f, 380.0f, 115.0f) apps:tmp1 active:NO];
 				else if (_dbl)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(10.0f,130.0f,748.0f,115.0f) apps:tmp1 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(10.0f,130.0f,748.0f,115.0f) apps:tmp1 active:NO];
 				else
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(748.0f/2 + 5.0f, 5.0f, 748.0f/2 - 5.0f, 115.0f) apps:tmp1 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(748.0f/2 + 5.0f, 5.0f, 748.0f/2 - 5.0f, 115.0f) apps:tmp1 active:NO];
 				
 			} else {
 				if (!_dbl)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(155.0f, 5.0f, 155.0f, 80.0f) apps:tmp1 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(155.0f, 5.0f, 155.0f, 80.0f) apps:tmp1 active:NO];
 				else
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrame:CGRectMake(5.0f, 90.0f, 310.0f, 80.0f) apps:tmp1 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrame:CGRectMake(5.0f, 90.0f, 310.0f, 80.0f) apps:tmp1 active:NO];
 			}
 		} else {
 			if isWildcat {
 				if (!_wide)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(130.0f, 10.0f, 115.0f, 380.0f) apps:tmp1 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(130.0f, 10.0f, 115.0f, 380.0f) apps:tmp1 active:NO];
 				else if (_dbl)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(130.0f,10.0f,115.0f,748.0f) apps:tmp1 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(130.0f,10.0f,115.0f,748.0f) apps:tmp1 active:NO];
 				else
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f, 748.0f/2 + 5.0f, 115.0f,748.0f/2 - 5.0f) apps:tmp1 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f, 748.0f/2 + 5.0f, 115.0f,748.0f/2 - 5.0f) apps:tmp1 active:NO];
 				
 			} else {
 				if (!_dbl)
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(5.0f, 155.0f, 80.0f, 155.0f) apps:tmp1 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(5.0f, 155.0f, 80.0f, 155.0f) apps:tmp1 active:NO];
 				else
-					_favoriteAppsScrollView = [[CIRScrollView alloc] initWithFrameVertically:CGRectMake(90.0f, 5.0f, 80.0f, 310.0f) apps:tmp1 active:NO];
+					_favoriteAppsScrollView = [[CIRScrollViewHandler alloc] initWithFrameVertically:CGRectMake(90.0f, 5.0f, 80.0f, 310.0f) apps:tmp1 active:NO];
 			}
 		}
-		_favoriteAppsScrollView.alpha = 0.0f;
-		[self addSubview:_favoriteAppsScrollView];
-		_favoriteAppsScrollView.alpha = 1.0f;
-		[tmp1 release];
+		[_favoriteAppsScrollView view].alpha = 0.0f;
 	}
-	[self addSubview:_activeAppsScrollView];
-	_activeAppsScrollView.alpha = 1.0f;
+	[tmp1 release];
+	[self addSubview:[_favoriteAppsScrollView view]];
+	[self addSubview:[_activeAppsScrollView view]];
+	[_activeAppsScrollView view].alpha = 1.0f;
+	[_favoriteAppsScrollView view].alpha = 1.0f;
 	[_fm removeFromSuperview];
 	[self addSubview:_fm];
 	[UIView commitAnimations];
@@ -763,6 +763,9 @@ static UIModalView *_alert = nil;
 	if (_freememory) {
 		[_fmTimer invalidate];
 	}
+	[_activeAppsScrollView release];
+	if (_favs)
+		[_favoriteAppsScrollView release];
 	[super dealloc];
 }
 	

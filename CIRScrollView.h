@@ -2,12 +2,11 @@
 
 @interface CIRScrollView : UIScrollView
 {
-	float holdTime;
+	id _handler;
 }
 
-- (id)initWithFrame:(CGRect)frame apps:(NSArray *)apps active:(BOOL)active;
-- (id)initWithFrameVertically:(CGRect)frame apps:(NSArray *)apps active:(BOOL)active;
+- (id)initWithFrame:(CGRect)frame handler:(id)handler;
 
-@property (nonatomic, retain) NSArray *appSet;
 
+@property (nonatomic, assign) id _handler;
 @end

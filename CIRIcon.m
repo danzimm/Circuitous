@@ -5,6 +5,7 @@
 #import <SpringBoard/SpringBoard.h>
 #import <SpringBoard/SBApplication.h>
 #import <SpringBoard/SBApplicationController.h>
+#import <SpringBoard/SBRoundedCornerView.h>
 
 #import "DSDisplayController.h"
 
@@ -34,37 +35,33 @@ static BOOL horiz = NO;
 
 @implementation CIRIcon
 
-- (id)initWithIdentifier:(NSString *)ident andXCoor:(int)coor animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge holdTime:(float)time themedIcon:(BOOL)icon
++ (void)setHoriz:(BOOL)horiz1
 {
-	horiz = NO;
+	horiz = horiz1;
+}
+
+- (id)initWithIdentifier:(NSString *)ident andFrame:(CGRect)frame labelHeight:(float)height animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge holdTime:(float)time themedIcon:(BOOL)icon
+{
 	holdTime = time;
+	icon = YES;
 	if isWildcat {
-		id orig = [super initWithFrame:CGRectMake(coor, 5.0f, 74.0f, 105.0f)];
+		id orig = [super initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height+height+5.0f)];
 		_animate = animations;
 		_identifier = [ident retain];
 		if ([_identifier isEqualToString:@"com.apple.springboard"])
-			_iconImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/springboard.png"]];
+			_iconImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/springboard.png"]]];
 		else {
 			if (icon)
 				_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] getIconImage:2]];
 			else {
-				NSBundle *bundle = [[[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:_identifier] bundle];
-				UIImage *image = nil;
-				image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Icon-72" ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"icon-72" ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[bundle infoDictionary] objectForKey:@"CFBundleIconFile"] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[[bundle infoDictionary] objectForKey:@"CFBundleIconFiles"] objectAtIndex:1] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
-				_iconImage = [[UIImageView alloc] initWithImage:image];
+				_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] getIconImage:1]];
 			}
 		}
-		_iconImage.frame = CGRectMake(0.0f, 7.5f, 74.0f, 78.0f);
+		_iconImage.frame = CGRectMake(0.0f, 5.0f, frame.size.width, frame.size.height);
 		[self addSubview:_iconImage];
 		if (label) {
-			_iconName = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 80.0f, 74.0f, 20.0f)];
-			_iconName.font = [UIFont systemFontOfSize:16.0f];
+			_iconName = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, frame.size.height + 5.0f, frame.size.width, height)];
+			_iconName.font = [UIFont systemFontOfSize:height];
 			_iconName.text = [[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] displayName];
 			_iconName.backgroundColor = [UIColor clearColor];
 			_iconName.textColor = [UIColor whiteColor];
@@ -74,7 +71,7 @@ static BOOL horiz = NO;
 		}
 		if (((int)[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] badgeValue] != 0) && badge) {
 			_badge = [[objc_getClass("SBIconBadge") alloc] initWithBadge:[NSString stringWithFormat:@"%d", [(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] badgeValue]]];
-			_badge.center = CGPointMake(_iconImage.frame.size.width,9.5f);
+			_badge.center = CGPointMake(_iconImage.frame.size.width,7.5f);
 			[self addSubview:_badge];
 		} else
 			_badge = nil;
@@ -82,32 +79,23 @@ static BOOL horiz = NO;
 		_bgBadge = nil;
 		return orig;
 	} else {
-		id orig = [super initWithFrame:CGRectMake(coor, 5.0f, 60.0f, 77.0f)];
+		id orig = [super initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height+height+5.0f)];
 		_animate = animations;
 		_identifier = [ident retain];
 		if ([_identifier isEqualToString:@"com.apple.springboard"])
-			_iconImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/springboard-phone.png"]];
+			_iconImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Applications/Circuitous.app/springboard-phone.png"]]];
 		else {
 			if (icon)
 				_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] icon]];
 			else {
-				NSBundle *bundle = [[[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:_identifier] bundle];
-				UIImage *image = nil;
-				image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Icon" ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"icon" ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[bundle infoDictionary] objectForKey:@"CFBundleIconFile"] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[[bundle infoDictionary] objectForKey:@"CFBundleIconFiles"] objectAtIndex:0] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
-				_iconImage = [[UIImageView alloc] initWithImage:image];
+				_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] smallIcon]];
 			}
 		}
-		_iconImage.frame = CGRectMake(0.0f, 5.0f, 57.0f, 57.0f);
+		_iconImage.frame = CGRectMake(0.0f, 5.0f, frame.size.width, frame.size.height);
 		[self addSubview:_iconImage];
 		if (label) {
-			_iconName = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 60.0f, self.frame.size.width, 12.0f)];
-			_iconName.font = [UIFont systemFontOfSize:12.0f];
+			_iconName = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, frame.size.height, frame.size.width, height)];
+			_iconName.font = [UIFont systemFontOfSize:height];
 			_iconName.text = [[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] displayName];
 			_iconName.backgroundColor = [UIColor clearColor];
 			_iconName.textColor = [UIColor whiteColor];
@@ -127,112 +115,14 @@ static BOOL horiz = NO;
 	}
 }
 
-- (id)initWithIdentifier:(NSString *)ident andYCoor:(int)coor animations:(BOOL)animations labels:(BOOL)label badges:(BOOL)badge holdTime:(float)time themedIcon:(BOOL)icon
-{
-	horiz = YES;
-	holdTime = time;
-	if isWildcat {
-		id orig = [super initWithFrame:CGRectMake(7.5f, coor, 74.0f, 105.0f)];
-		_animate = animations;
-		_identifier = [ident retain];
-		if ([_identifier isEqualToString:@"com.apple.springboard"])
-			_iconImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/springboard.png"]];
-		else {
-			if (icon)
-				_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] getIconImage:2]];
-			else {
-				NSBundle *bundle = [[[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:_identifier] bundle];
-				UIImage *image = nil;
-				image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Icon-72" ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"icon-72" ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[bundle infoDictionary] objectForKey:@"CFBundleIconFile"] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[[bundle infoDictionary] objectForKey:@"CFBundleIconFiles"] objectAtIndex:1] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
-				_iconImage = [[UIImageView alloc] initWithImage:image];
-			}
-		}
-		_iconImage.frame = CGRectMake(0.0f, 7.5f, 74.0f, 78.0f);
-		[self addSubview:_iconImage];
-		if (label) {
-			_iconName = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 80.0f, 74.0f, 20.0f)];
-			_iconName.font = [UIFont systemFontOfSize:16.0f];
-			_iconName.text = [[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] displayName];
-			_iconName.backgroundColor = [UIColor clearColor];
-			_iconName.textColor = [UIColor whiteColor];
-			_iconName.textAlignment = UITextAlignmentCenter;
-			_iconName.adjustsFontSizeToFitWidth = YES;
-			[self addSubview:_iconName];
-		}
-		if (((int)[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] badgeValue] != 0) && badge) {
-			_badge = [[objc_getClass("SBIconBadge") alloc] initWithBadge:[NSString stringWithFormat:@"%d", [(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] badgeValue]]];
-			_badge.center = CGPointMake(_iconImage.frame.size.width,9.5f);
-			[self addSubview:_badge];
-		} else
-			_badge = nil;
-		_iconClose = nil;
-		_bgBadge = nil;
-		return orig;
-	} else {
-		id orig = [super initWithFrame:CGRectMake(7.5f, coor, 60.0f, 77.0f)];
-		_animate = animations;
-		_identifier = [ident retain];
-		if ([_identifier isEqualToString:@"com.apple.springboard"])
-			_iconImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Applications/Circuitous.app/springboard-phone.png"]];
-		else {
-			if (icon)
-				_iconImage = [[UIImageView alloc] initWithImage:[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] icon]];
-			else {
-				NSBundle *bundle = [[[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:_identifier] bundle];
-				UIImage *image = nil;
-				image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Icon" ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"icon" ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[bundle infoDictionary] objectForKey:@"CFBundleIconFile"] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
-				if (!image)
-					image = [UIImage imageWithContentsOfFile:[bundle pathForResource:[[[[bundle infoDictionary] objectForKey:@"CFBundleIconFiles"] objectAtIndex:0] stringByReplacingOccurrencesOfString:@".png" withString:@""] ofType:@"png"]];
-				_iconImage = [[UIImageView alloc] initWithImage:image];
-			}
-		}
-		_iconImage.frame = CGRectMake(0.0f, 5.0f, 57.0f, 57.0f);
-		[self addSubview:_iconImage];
-		if (label) {
-			_iconName = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 60.0f, self.frame.size.width, 12.0f)];
-			_iconName.font = [UIFont systemFontOfSize:12.0f];
-			_iconName.text = [[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] displayName];
-			_iconName.backgroundColor = [UIColor clearColor];
-			_iconName.textColor = [UIColor whiteColor];
-			_iconName.textAlignment = UITextAlignmentCenter;
-			_iconName.adjustsFontSizeToFitWidth = YES;
-			[self addSubview:_iconName];
-		}
-		if (((int)[(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] badgeValue] != 0) && badge) {
-			_badge = [[objc_getClass("SBIconBadge") alloc] initWithBadge:[NSString stringWithFormat:@"%d", [(SBIcon *)[[objc_getClass("SBIconModel") sharedInstance] iconForDisplayIdentifier:ident] badgeValue]]];
-			_badge.center = CGPointMake(_iconImage.frame.size.width,6.0f);
-			[self addSubview:_badge];
-		} else
-			_badge = nil;
-		_iconClose = nil;
-		_bgBadge = nil;
-		return orig;
-	}
-}
 
 - (void)setActive
 {
 	_iconClose = [[CIRCloseView alloc] initWithIdentifier:_identifier animations:_animate];
-	if (!horiz) {
-		if isWildcat
-			_iconClose.center = CGPointMake(0.0f, 7.5f);
-		else
-			_iconClose.center = CGPointMake(0.0f,6.0f);
+	if (horiz) {
+		_iconClose.center = CGPointMake(0.0f, 7.5f);
 	} else {
-		if isWildcat
-			_iconClose.center = CGPointMake(2.5f, 7.5f);
-		else
-			_iconClose.center = CGPointMake(2.5f,6.0f);
+		_iconClose.center = CGPointMake(2.5f, 7.5f);
 	}
 	[self addSubview:_iconClose];
 }
@@ -244,7 +134,7 @@ static BOOL horiz = NO;
 
 - (void)setBackgrounderBadge
 {
-	UIImage *image = [UIImage imageWithContentsOfFile:@"/Applications/Backgrounder.app/badge.png"];
+	UIImage *image = [UIImage imageWithContentsOfFile:@"/System/Library/CoreServices/SpringBoard.app/Backgrounder_Badge.png"];
 	if (image) {
 		_bgBadge = [[UIImageView alloc] initWithImage:image];
 		_bgBadge.center = CGPointMake(CGRectGetMaxX(_iconImage.frame) - 5.0f, CGRectGetMaxY(_iconImage.frame) - 5.0f);
@@ -279,7 +169,7 @@ static CGPoint _start;
 	[self setTransform:CGAffineTransformMakeScale(1.25f, 1.25f)];
 	[self setAlpha:0.85f];
 	[[self superview] bringSubviewToFront:self];
-	[(CIRScrollView *)[self superview] setScrollEnabled:NO];
+	[(UIScrollView *)[self superview] setScrollEnabled:NO];
 	[UIView commitAnimations];
 }
 
@@ -309,7 +199,7 @@ static CGPoint _start;
 			self.alpha = 1.0f;
 		}
 	} else {
-		if (!horiz)
+		if (horiz)
 			self.center = CGPointMake(self.center.x, currentPosition.y);
 		else
 			self.center = CGPointMake(currentPosition.x, self.center.y);
@@ -346,7 +236,7 @@ static CGPoint _start;
 			[(SpringBoard *)[UIApplication sharedApplication] hideCircuitous];
 		}
 	} else {
-		if (((self.center.y < 0.0f || self.center.y > [self superview].frame.size.height) && !horiz) || ((self.center.x < 0.0f || self.center.x > [self superview].frame.size.width) && horiz)) {
+		if (((self.center.y < 0.0f || self.center.y > [self superview].frame.size.height) && horiz) || ((self.center.x < 0.0f || self.center.x > [self superview].frame.size.width) && !horiz)) {
 			if ([_identifier isEqualToString:@"com.apple.springboard"])
 				[(SpringBoard *)[UIApplication sharedApplication] relaunchSpringBoard];
 			[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forDisplayIdentifier:_identifier];
@@ -356,31 +246,28 @@ static CGPoint _start;
 			self.center = oldCenter;
 			[self setTransform:CGAffineTransformMakeScale(1.0f, 1.0f)];
 			[self setAlpha:1.0f];
-			[(CIRScrollView *)[self superview] setScrollEnabled:YES];
+			[(UIScrollView *)[self superview] setScrollEnabled:YES];
 			[UIView commitAnimations];
 		}
 	}
 }
 
--(void)modalView:(id)view didDismissWithButtonIndex:(int)buttonIndex
+- (void)removeBackgrounderBadge
 {
-	switch (buttonIndex) {
-		case 0:
-			[[DSDisplayController sharedInstance] setBackgroundingEnabled:YES forApplication:[[DSDisplayController sharedInstance] activeApp]];
-			[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:_identifier animated:_animate];
-			[(SpringBoard *)[UIApplication sharedApplication] hideCircuitous];
-			break;
-		case 1:
-			if (_iconClose)
-				[_iconClose animate];
-			if ([_identifier isEqualToString:@"com.apple.springboard"])
-				[(SpringBoard *)[UIApplication sharedApplication] relaunchSpringBoard];
-			[[DSDisplayController sharedInstance] setBackgroundingEnabled:NO forDisplayIdentifier:_identifier];
-			[[DSDisplayController sharedInstance] exitAppWithDisplayIdentifier:_identifier animated:_animate force:YES];
-			break;
-		default:
-			break;
-	}
+	if (!_bgBadge)
+		return;
+	[_bgBadge removeFromSuperview];
+	[_bgBadge release];
+	_bgBadge = nil;
+}
+
+- (void)removeIsActive
+{
+	if (!_iconClose)
+		return;
+	[_iconClose removeFromSuperview];
+	[_iconClose release];
+	_iconClose = nil;
 }
 
 - (void)dealloc
