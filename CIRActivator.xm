@@ -87,25 +87,24 @@ static void UpdatePreferences() {
 
 @interface CIRModalDelegate : NSObject<UIModalViewDelegate> {
 }
--(void)modalView:(id)view didDismissWithButtonIndex:(int)buttonIndex;
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex;
 @end
 
 @implementation CIRModalDelegate
 
--(void)modalView:(id)view didDismissWithButtonIndex:(int)buttonIndex
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-	UIModalView *view1 = (UIModalView *)view;
-	if ([view1.title isEqualToString:@"Welcome to Circuitous 2.2"]) {
+	if ([alertView.title isEqualToString:@"Welcome to Circuitous 2.2 and DisplayController 2.0"]) {
 		switch (buttonIndex) {
-			case 0:
+			case 1:
 				[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:@"com.apple.Preferences" animated:_animations];
 				break;
 			default:
 				break;
 		}
-	} else if ([view1.title isEqualToString:@"Circuitous Uninstalled"]) {
+	} else if ([alertView.title isEqualToString:@"Circuitous Uninstalled"]) {
 		switch (buttonIndex) {
-			case 0:
+			case 1:
 				[(SpringBoard *)[UIApplication sharedApplication] relaunchSpringBoard];
 				break;
 			default:
@@ -381,7 +380,6 @@ static void UpdatePreferences() {
 			}
 		}
 	}
-	NSLog(@"App is: %@", appIs);
 	[[DSDisplayController sharedInstance] activateAppWithDisplayIdentifier:appIs animated:_animations];
 	[hidden release];
 	[apps release];
@@ -468,11 +466,9 @@ static void UpdatePreferences() {
 	%orig;
 	_uninstalled = YES;
 	[(SpringBoard *)[UIApplication sharedApplication] hideCircuitous];
-	UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Circuitous Uninstalled" buttons:[NSArray arrayWithObjects:@"Respring", @"Later", nil] defaultButtonIndex:0 delegate:[[CIRModalDelegate alloc] init] context:NULL];
-	[alert setBodyText:@"The SpringBoard needs to respring, do you want to do it now or later?"];
-	[alert setNumberOfRows:1];
-	[alert popupAlertAnimated:YES];
-	[alert release];
+	UIAlertView *uninstalled = [[UIAlertView alloc] initWithTitle:@"Circuitous Uninstalled" message:@"The SpringBoard needs to respring, do you want to do it now or later?" delegate:[[CIRModalDelegate alloc] init] cancelButtonTitle:@"Later" otherButtonTitles:@"Respring", nil];
+	[uninstalled show];
+	[uninstalled release];
 }
 
 
@@ -483,15 +479,19 @@ static void UpdatePreferences() {
 - (void)finishLaunching
 {
 	%orig;
+	[self performSelector:@selector(circAlert) withObject:nil afterDelay:1/1];
+}
+
+%new(v@:)
+- (void)circAlert
+{
 	NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist"]?:[[NSMutableDictionary alloc] init];
-	if (![prefs objectForKey:@"2.2-1"]) {
-		[prefs setObject:@"OK" forKey:@"2.2-1"];
+	if (![prefs objectForKey:@"2.2.1.0"]) {
+		[prefs setObject:@"OK" forKey:@"2.2.1.0"];
 		[prefs writeToFile:@"/var/mobile/Library/Preferences/com.zimm.circuitous.plist" atomically:YES];
-		UIModalView *alert = [[UIModalView alloc] initWithTitle:@"Welcome to Circuitous 2.2" buttons:[NSArray arrayWithObjects:@"Settings", @"Later", nil] defaultButtonIndex:0 delegate:[[CIRModalDelegate alloc] init] context:NULL];
-		[alert setBodyText:@"Go configure your preferences in the settings app. They have changed yet again, even MORE opetions!"];
-		[alert setNumberOfRows:1];
-		[alert popupAlertAnimated:YES];
-		[alert release];
+		UIAlertView *welcome = [[UIAlertView alloc] initWithTitle:@"Welcome to Circuitous 2.2 and DisplayController 2.0" message:@"Go configure your preferences in the settings app. They have changed yet again, even MORE opetions! Also don't forget to change your options for display controller!" delegate:[[CIRModalDelegate alloc] init] cancelButtonTitle:@"Later" otherButtonTitles:@"Settings", nil];
+		[welcome show];
+		[welcome release];
 	}
 	[prefs release];
 }
